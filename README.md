@@ -1,6 +1,6 @@
 # M Harley Portfolio Website
 
-Personal portfolio for Michael (Em) Harley. React and Vite, with a lightweight animated star background and a lazily loaded Three.js contact illustration.
+Personal portfolio for Michael (Em) Harley. React and Vite, with a lightweight animated star background.
 
 ## Development
 
@@ -32,8 +32,8 @@ This runs the TypeScript type check, accessibility-aware linting, formatting che
 src/
   data/        Editable content (profile, experience, projects, skills) and its types
   components/  One component per page section, plus small shared pieces
-  graphics/    Framework-free canvas code: star field, planet scene, animation loop
-  hooks/       useMediaQuery, useInView, useActiveSection
+  graphics/    Framework-free canvas code: star field and animation loop
+  hooks/       useMediaQuery, useActiveSection
   utils/       Contact validation and EmailJS delivery
   motion.ts    Context that pauses animation (footer toggle or reduced-motion preference)
 ```
@@ -56,15 +56,11 @@ Styles are Tailwind CSS v4 utility classes written directly on the components, m
 
 The supplied July 2026 résumé is the source for historical roles. The owner confirmed Pacific Fusion and planned work using Kafka, Go, Python, and TypeScript for device telemetry, analysis, monitoring, and control. This is described as planned work, not completed achievements. The exact job title and start date remain to be supplied.
 
-Page title, description, canonical URL, social metadata, and structured profile data in index.html are filled from profile.ts by the `siteMetadata` plugin in vite.config.ts. Stars respect reduced motion, can be paused using the footer button, and stop when the page is hidden. The contact scene loads near the viewport, limits resolution, and falls back gracefully when WebGL fails.
+Page title, description, canonical URL, social metadata, and structured profile data in index.html are filled from profile.ts by the `siteMetadata` plugin in vite.config.ts. Stars respect reduced motion, can be paused using the footer button, and stop when the page is hidden.
 
 ## Contact delivery
 
 Existing EmailJS public service identifiers remain the defaults. Override through .env.local using .env.example. Never put a private key in a VITE_ variable: those values are public. Configure allowed origins and anti-abuse controls in the EmailJS account. Unit tests cover validation and template mapping; they do not send email. Real inbox delivery needs an owner-supervised test.
-
-## Credits
-
-The contact illustration uses “Stylized planet” by cmzw, licensed CC BY 4.0. Attribution is displayed next to the model; source and license are recorded in public/planet/license.txt.
 
 ## Review workflow
 

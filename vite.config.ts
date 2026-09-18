@@ -48,7 +48,4 @@ function siteMetadata(): Plugin {
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), siteMetadata()],
-  // three.js (~600 kB) is only fetched lazily for the contact planet, so it
-  // doesn't affect initial load; raise the limit rather than hand-split it.
-  build: { chunkSizeWarningLimit: 650 },
 })

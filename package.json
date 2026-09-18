@@ -21,8 +21,7 @@
     "@emailjs/browser": "^4.4.1",
     "@fontsource/playfair-display": "^5.2.0",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "three": "^0.186.0"
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
@@ -30,7 +29,6 @@
     "@types/node": "^24.13.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^9.39.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
