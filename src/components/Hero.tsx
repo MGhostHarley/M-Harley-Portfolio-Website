@@ -7,7 +7,10 @@ import portrait from '../assets/optimized/portrait.webp'
 const paragraphStyles = 'my-4.5 text-[1.15rem] leading-[1.7]'
 
 export default function Hero() {
-  const [firstName, lastName] = profile.name.split(' ')
+  // Text on either side of the highlight keeps its spaces, e.g. "Michael " + "".
+  const [beforeHighlight, afterHighlight] = profile.name.split(
+    profile.highlightedName,
+  )
   return (
     <div className="relative before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-hero">
       <section
@@ -20,10 +23,11 @@ export default function Hero() {
             id="home-heading"
             className="mb-6 text-[length:clamp(2.5rem,10vw,3.8rem)] leading-[1.2] font-bold md:text-[length:clamp(2.75rem,5vw,4.5rem)]"
           >
-            {firstName}{' '}
+            {beforeHighlight}
             <span className="inline-block px-3 pb-3 text-snow bg-brush text-shadow-[0_2px_5px_var(--color-ink)]">
-              {lastName}
+              {profile.highlightedName}
             </span>
+            {afterHighlight}
           </h1>
           <p className={`${paragraphStyles} font-bold text-lavender`}>
             {profile.title}

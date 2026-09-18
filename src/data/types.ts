@@ -8,6 +8,8 @@ export interface SocialProfile {
 
 export interface Profile {
   name: string
+  /** The portion of the name highlighted in the hero artwork. */
+  highlightedName: string
   preferredName: string
   title: string
   location: string

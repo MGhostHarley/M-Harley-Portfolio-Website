@@ -2,6 +2,7 @@ import type { Faq, NavLink, Profile } from './types.ts'
 
 export const profile: Profile = {
   name: 'Michael Harley',
+  highlightedName: 'Harley',
   preferredName: 'Em',
   title: 'Senior Full-Stack Software Engineer',
   location: 'San Francisco, CA',

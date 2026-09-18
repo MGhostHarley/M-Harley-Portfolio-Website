@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { navLinks } from '../src/data/profile'
+import { navLinks, profile } from '../src/data/profile'
 import { experiences } from '../src/data/experience'
 import { projects } from '../src/data/projects'
 
@@ -12,6 +12,10 @@ describe('content', () => {
     ['projects', ids(projects)],
   ])('%s entries have unique ids', (_, list) => {
     expect(new Set(list).size).toBe(list.length)
+  })
+
+  it('highlights a part of the name that appears exactly once', () => {
+    expect(profile.name.split(profile.highlightedName)).toHaveLength(2)
   })
 
   it('every project links to a demo or its source', () => {
