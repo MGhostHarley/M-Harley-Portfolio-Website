@@ -38,6 +38,15 @@ src/
   motion.ts    Context that pauses animation (footer toggle or reduced-motion preference)
 ```
 
+## Styling
+
+Styles are Tailwind CSS v4 utility classes written directly on the components, mobile-first: unprefixed classes apply to phones, `md:` from 768px, and `lg:` from 1060px.
+
+- `src/index.css` holds the design tokens (`@theme`: colors, fonts, breakpoints), two background-image utilities, and a small base layer for site-wide element defaults.
+- Each `--color-*` token becomes utilities such as `bg-night`, `text-muted`, or `border-line`.
+- Class lists reused in several places live in `src/components/styles.ts` (buttons, text links) and `sectionStyles` in `Section.tsx`.
+- Prettier sorts class names automatically (`prettier-plugin-tailwindcss`).
+
 ## Content
 
 - `src/data/profile.ts`: biography, contact links, FAQs, site description, canonical URL.

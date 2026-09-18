@@ -20,5 +20,11 @@ export default function Stars() {
     fieldRef.current?.setAnimating(motionEnabled)
   }, [motionEnabled])
 
-  return <canvas className="stars" ref={canvasRef} aria-hidden="true" />
+  return (
+    <canvas
+      className="pointer-events-none fixed inset-0 z-1 size-full"
+      ref={canvasRef}
+      aria-hidden="true"
+    />
+  )
 }

@@ -1,3 +1,5 @@
+import { textLinkStyles } from './styles'
+
 interface FooterProps {
   paused: boolean
   reducedMotion: boolean
@@ -15,11 +17,11 @@ export default function Footer({
       ? 'Resume animation'
       : 'Pause animation'
   return (
-    <footer className="page-footer">
-      <p>© {new Date().getFullYear()} Michael Harley</p>
+    <footer className="relative z-1 mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-3 p-6">
+      <p className="my-4">© {new Date().getFullYear()} Michael Harley</p>
       <button
         type="button"
-        className="text-link"
+        className={`${textLinkStyles} px-1.5 py-px`}
         onClick={onTogglePause}
         disabled={reducedMotion}
         aria-pressed={paused || reducedMotion}

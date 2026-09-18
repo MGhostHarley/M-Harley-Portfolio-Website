@@ -7,11 +7,22 @@ import {
   type ContactForm as ContactValues,
 } from '../utils/contact'
 import { sendContactEmail } from '../utils/sendEmail'
+import { buttonStyles } from './styles'
 
 interface Status {
   type: 'idle' | 'sending' | 'success' | 'error'
   message: string
 }
+
+const statusColors: Record<Status['type'], string> = {
+  idle: '',
+  sending: '',
+  success: 'text-success',
+  error: 'text-error',
+}
+
+const inputStyles =
+  'block w-full rounded-lg border border-line bg-surface-raised px-4 py-3.5 text-snow aria-[invalid=true]:border-error'
 
 const emptyForm: ContactValues = { name: '', email: '', message: '' }
 
@@ -26,7 +37,7 @@ const fields: {
   { name: 'message', label: 'Your message' },
 ]
 
-export default function ContactForm() {
+export default function ContactForm({ className }: { className?: string }) {
   const [values, setValues] = useState(emptyForm)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [status, setStatus] = useState<Status>({ type: 'idle', message: '' })
@@ -81,7 +92,12 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate aria-busy={sending}>
+    <form
+      className={className}
+      onSubmit={handleSubmit}
+      noValidate
+      aria-busy={sending}
+    >
       {fields.map(({ name, label, type, autoComplete }) => {
         const error = errors[name]
         const errorId = `${name}-error`
@@ -97,15 +113,26 @@ export default function ContactForm() {
           'aria-describedby': error ? errorId : undefined,
         }
         return (
-          <div className="form-field" key={name}>
-            <label htmlFor={inputProps.id}>{label}</label>
+          <div className="mb-6" key={name}>
+            <label htmlFor={inputProps.id} className="mb-2.5 block">
+              {label}
+            </label>
             {name === 'message' ? (
-              <textarea {...inputProps} rows={6} />
+              <textarea
+                {...inputProps}
+                rows={6}
+                className={`${inputStyles} resize-y`}
+              />
             ) : (
-              <input {...inputProps} type={type} autoComplete={autoComplete} />
+              <input
+                {...inputProps}
+                type={type}
+                autoComplete={autoComplete}
+                className={inputStyles}
+              />
             )}
             {error && (
-              <p id={errorId} className="field-error">
+              <p id={errorId} className="my-4 leading-normal text-error">
                 {error}
               </p>
             )}
@@ -114,13 +141,13 @@ export default function ContactForm() {
       })}
       <button
         type="submit"
-        className="button button-secondary"
+        className={buttonStyles.secondary}
         disabled={sending}
       >
         {sending ? 'Sending…' : 'Send message'}
       </button>
       <p
-        className={`form-status ${status.type}`}
+        className={`my-4 min-h-[3em] leading-normal ${statusColors[status.type]}`}
         role="status"
         aria-live="polite"
       >

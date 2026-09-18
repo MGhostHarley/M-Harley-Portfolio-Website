@@ -12,10 +12,14 @@ const iconPaths: Record<SocialIcon, string> = {
 
 export default function SocialLinks() {
   return (
-    <ul className="social-links" aria-label="Social profiles">
+    <ul className="mt-6 flex gap-4" aria-label="Social profiles">
       {profile.socials.map(({ name, url, icon }) => (
         <li key={name}>
-          <ExternalLink href={url} aria-label={`${name} (opens in new tab)`}>
+          <ExternalLink
+            href={url}
+            aria-label={`${name} (opens in new tab)`}
+            className="grid size-11 place-items-center rounded-md text-accent hover:bg-surface-raised"
+          >
             <svg
               viewBox="0 0 24 24"
               width="30"

@@ -39,11 +39,21 @@ export default function ContactScene() {
   }, [scene, inView, motionEnabled])
 
   return (
-    <div className="contact-scene">
-      <div className="planet-stage" ref={stageRef} aria-hidden="true">
-        {(!scene || failed) && <div className="planet-fallback">✦</div>}
+    <div className="-order-1 lg:order-none">
+      {/* The canvas is positioned out of flow so it never props the grid
+          column open when the window narrows. */}
+      <div
+        ref={stageRef}
+        aria-hidden="true"
+        className="relative h-65 lg:h-90 [&>canvas]:absolute [&>canvas]:inset-0"
+      >
+        {(!scene || failed) && (
+          <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(ellipse,var(--color-surface-card),transparent_68%)] text-[120px] text-violet">
+            ✦
+          </div>
+        )}
       </div>
-      <p className="model-credit">
+      <p className="my-[1em] text-center text-[0.8rem] leading-[1.7] text-muted [&_a]:underline">
         <ExternalLink href="https://sketchfab.com/3d-models/stylized-planet-789725db86f547fc9163b00f302c3e70">
           Stylized planet by cmzw
         </ExternalLink>

@@ -2,6 +2,7 @@ import Section from './Section'
 import ExternalLink from './ExternalLink'
 import { projects } from '../data/projects'
 import type { Project } from '../data/types'
+import { textLinkStyles } from './styles'
 
 function ProjectCard({
   name,
@@ -32,10 +33,11 @@ function ProjectCard({
       height="540"
       loading="lazy"
       decoding="async"
+      className="aspect-video h-auto w-full rounded-[10px] bg-surface-sunken object-contain"
     />
   )
   return (
-    <article className="project-card">
+    <article className="rounded-2xl bg-surface-raised p-5">
       {previewUrl ? (
         <ExternalLink
           href={previewUrl}
@@ -46,26 +48,31 @@ function ProjectCard({
       ) : (
         preview
       )}
-      <h3>{name}</h3>
-      <p>{description}</p>
-      <ul className="project-tags" aria-label="Technologies">
+      <h3 className="mt-5.5 mb-3 text-[1.5rem] font-bold">{name}</h3>
+      <p className="my-4 leading-[1.7] text-muted">{description}</p>
+      <ul
+        className="my-4 flex flex-wrap gap-3.5 text-accent"
+        aria-label="Technologies"
+      >
         {tags.map((tag) => (
           <li key={tag}>{tag}</li>
         ))}
       </ul>
-      <div className="project-links">
+      <div className="mt-5 flex flex-wrap items-center gap-3 md:gap-4">
         {links.map(({ label, url, unavailable }) =>
           url ? (
             <ExternalLink
               key={label}
-              className="text-link"
+              className={textLinkStyles}
               href={url}
               aria-label={`View ${name} ${label.toLowerCase()} (new tab)`}
             >
               {label} ↗
             </ExternalLink>
           ) : (
-            <span key={label}>{unavailable}</span>
+            <span key={label} className="text-[0.85rem] text-muted">
+              {unavailable}
+            </span>
           ),
         )}
       </div>
@@ -80,7 +87,7 @@ export default function Projects() {
       title="My Work"
       intro="Selected personal projects, with live demos and public source code where available."
     >
-      <div className="project-grid">
+      <div className="mt-9 grid grid-cols-1 gap-7 md:grid-cols-2">
         {projects.map((project) => (
           <ProjectCard key={project.id} {...project} />
         ))}

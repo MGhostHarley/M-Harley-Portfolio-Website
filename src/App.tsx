@@ -17,12 +17,19 @@ export default function App() {
 
   return (
     <MotionContext value={!reducedMotion && !paused}>
-      <a className="skip-link" href="#main-content">
+      <a
+        className="fixed -top-25 left-4 z-100 bg-snow px-5 py-3.5 text-night focus:top-3"
+        href="#main-content"
+      >
         Skip to content
       </a>
       <Stars />
       <Navbar />
-      <main id="main-content" tabIndex={-1}>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="relative focus:outline-none"
+      >
         <Hero />
         <About />
         <Experience />
