@@ -98,6 +98,9 @@ export default function ContactForm({ className }: { className?: string }) {
       setValues(emptyForm)
       setStatus({ type: 'success', message: messages.success })
     } catch (error) {
+      // EmailJS rejects with { status, text }; the text names the cause,
+      // e.g. an expired Gmail connection in the EmailJS dashboard.
+      console.error('Contact form: message not sent', error)
       setStatus({
         type: 'error',
         message:

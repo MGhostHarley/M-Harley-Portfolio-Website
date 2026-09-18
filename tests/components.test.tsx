@@ -38,6 +38,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
+  vi.restoreAllMocks()
   vi.unstubAllGlobals()
 })
 
@@ -78,6 +79,7 @@ describe('ContactForm', () => {
     ['a failure', new Error('Unavailable'), 'could not be sent'],
   ])('explains %s without clearing the message', async (_, error, text) => {
     vi.mocked(sendContactEmail).mockRejectedValue(error)
+    const logError = vi.spyOn(console, 'error').mockImplementation(() => {})
     const user = userEvent.setup()
     render(<ContactForm />)
 
@@ -89,6 +91,10 @@ describe('ContactForm', () => {
     expect(
       screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
     ).toBe('Hello Em')
+    expect(logError).toHaveBeenCalledWith(
+      'Contact form: message not sent',
+      error,
+    )
   })
 
   it('silently accepts honeypot submissions without sending email', async () => {
