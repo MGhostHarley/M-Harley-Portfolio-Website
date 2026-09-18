@@ -6,7 +6,7 @@ import {
   type ContactField,
   type ContactForm as ContactValues,
 } from '../utils/contact'
-import { sendContactEmail } from '../utils/sendEmail'
+import { EmailTimeoutError, sendContactEmail } from '../utils/sendEmail'
 import { buttonStyles } from './styles'
 
 interface Status {
@@ -25,6 +25,22 @@ const inputStyles =
   'block w-full rounded-lg border border-line bg-surface-raised px-4 py-3.5 text-snow aria-[invalid=true]:border-error'
 
 const emptyForm: ContactValues = { name: '', email: '', message: '' }
+
+// Hidden spam trap: people never see it, bots fill it in. The name avoids
+// words like "website" or "url" so browser autofill won't fill it either.
+const HONEYPOT_NAME = 'nickname_confirm'
+
+const messages = {
+  success:
+    'Thanks for your message. I will get back to you as soon as possible.',
+  invalid: 'Please check the highlighted fields.',
+  sending: 'Sending your message…',
+  failed:
+    'Your message could not be sent. Please try again or use the email link below.',
+  // The request may still complete after we stop waiting, so don't invite a resend.
+  timedOut:
+    'This is taking longer than expected, and your message may still arrive. Rather than resending, please use the email link below.',
+}
 
 const fields: {
   name: ContactField
@@ -57,34 +73,37 @@ export default function ContactForm({ className }: { className?: string }) {
     event.preventDefault()
     if (inFlight.current) return
 
+    // Pretend a bot submission succeeded so it has no reason to retry.
+    const honeypot = event.currentTarget.elements.namedItem(HONEYPOT_NAME)
+    if (honeypot instanceof HTMLInputElement && honeypot.value) {
+      setValues(emptyForm)
+      setStatus({ type: 'success', message: messages.success })
+      return
+    }
+
     const { data, errors: validationErrors } = validateContact(values)
     setErrors(validationErrors)
     const firstInvalid = fields.find(({ name }) => validationErrors[name])
     if (firstInvalid) {
-      setStatus({
-        type: 'error',
-        message: 'Please check the highlighted fields.',
-      })
+      setStatus({ type: 'error', message: messages.invalid })
       const element = event.currentTarget.elements.namedItem(firstInvalid.name)
       if (element instanceof HTMLElement) element.focus()
       return
     }
 
     inFlight.current = true
-    setStatus({ type: 'sending', message: 'Sending your message…' })
+    setStatus({ type: 'sending', message: messages.sending })
     try {
       await sendContactEmail(data)
       setValues(emptyForm)
-      setStatus({
-        type: 'success',
-        message:
-          'Thanks for your message. I will get back to you as soon as possible.',
-      })
-    } catch {
+      setStatus({ type: 'success', message: messages.success })
+    } catch (error) {
       setStatus({
         type: 'error',
         message:
-          'Your message could not be sent. Please try again or use the email link below.',
+          error instanceof EmailTimeoutError
+            ? messages.timedOut
+            : messages.failed,
       })
     } finally {
       inFlight.current = false
@@ -98,6 +117,19 @@ export default function ContactForm({ className }: { className?: string }) {
       noValidate
       aria-busy={sending}
     >
+      <div
+        className="absolute -left-[10000px] size-px overflow-hidden"
+        aria-hidden="true"
+      >
+        <label htmlFor="contact-honeypot">Leave this field empty</label>
+        <input
+          id="contact-honeypot"
+          name={HONEYPOT_NAME}
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
       {fields.map(({ name, label, type, autoComplete }) => {
         const error = errors[name]
         const errorId = `${name}-error`

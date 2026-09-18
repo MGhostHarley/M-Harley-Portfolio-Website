@@ -60,7 +60,7 @@ Page title, description, canonical URL, social metadata, and structured profile 
 
 ## Contact delivery
 
-Existing EmailJS public service identifiers remain the defaults. Override through .env.local using .env.example. Never put a private key in a VITE_ variable: those values are public. Configure allowed origins and anti-abuse controls in the EmailJS account. Unit tests cover validation and template mapping; they do not send email. Real inbox delivery needs an owner-supervised test.
+Existing EmailJS public service identifiers remain the defaults. Override through .env.local using .env.example. Never put a private key in a VITE_ variable: those values are public. Configure allowed origins and anti-abuse controls in the EmailJS account. The form includes a hidden honeypot field that silently discards bot submissions, and stops waiting after 12 seconds with a message asking the visitor not to resend (the request may still arrive). Unit and component tests cover validation, template mapping, and these form states with a mocked sender; they do not send email. Real inbox delivery needs an owner-supervised test.
 
 ## Review workflow
 
