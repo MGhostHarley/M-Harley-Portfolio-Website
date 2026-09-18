@@ -1,15 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
+    <!-- Percent-wrapped placeholders are filled from src/data/profile.ts by vite.config.ts. -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>M Harley | Portfolio</title>
-    <link rel="icon" type="image/svg+xml" href="/src/assets/logoColor.png">
-
+    <meta name="theme-color" content="#050816" />
+    <title>%SITE_TITLE%</title>
+    <meta name="description" content="%SITE_DESCRIPTION%" />
+    <link rel="canonical" href="%SITE_URL%/" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="%SITE_TITLE%" />
+    <meta property="og:description" content="%SITE_DESCRIPTION%" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/social-preview.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="%SITE_IMAGE_ALT%" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@EmInProd" />
+    <script type="application/ld+json">
+      %PROFILE_JSON%
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <noscript>
+      This portfolio requires JavaScript. Contact Michael Harley at
+      <a href="mailto:%CONTACT_EMAIL%">%CONTACT_EMAIL%</a>.
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
