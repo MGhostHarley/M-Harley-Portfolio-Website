@@ -1,37 +1,44 @@
 import Section from './Section'
-import { faqs, profile } from '../data/profile'
-import { services } from '../data/skills'
+import TechChip from './TechChip'
+import { profile } from '../data/profile'
+import { skillGroups } from '../data/skills'
+import { panelStyles } from './styles'
 
 export default function About() {
   return (
     <Section
       id="about"
-      title="About Me"
-      intro={[profile.summary, profile.approach]}
+      eyebrow="About"
+      title={`Hi, I'm ${profile.preferredName}.`}
     >
-      <ul className="my-9 grid grid-cols-2 gap-3.5 md:gap-6 lg:grid-cols-4">
-        {services.map(({ name, icon }) => (
-          <li
-            key={name}
-            className="flex min-h-45 flex-col items-center justify-center gap-5 rounded-[20px] border border-violet bg-surface-raised px-3 py-4.5 text-center md:min-h-52.5 md:px-4 md:py-7"
-          >
-            <img src={icon} alt="" width="64" height="64" loading="lazy" />
-            <h3 className="text-[1.15rem] font-bold">{name}</h3>
-          </li>
-        ))}
-      </ul>
-      <h3 className="mt-10 mb-5 text-[1.8rem] font-bold text-muted">
-        FAQs about me
-      </h3>
-      <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
-        {faqs.map(({ question, answer }) => (
-          <details key={question}>
-            <summary className="cursor-pointer px-6 py-5 text-[1.1rem] text-accent">
-              {question}
-            </summary>
-            <p className="px-6 pb-6 leading-[1.7]">{answer}</p>
-          </details>
-        ))}
+      <div className="grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+        <div className="text-[1.08rem] text-body">
+          <p className="mb-5">{profile.summary}</p>
+          <p className="mb-8">{profile.approach}</p>
+          <h3 className="mb-2 eyebrow text-sm">Education</h3>
+          <p className="text-snow">{profile.education}</p>
+        </div>
+
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+          {skillGroups.map(({ name, skills }, index) => (
+            <section
+              key={name}
+              aria-labelledby={`skills-${index}`}
+              className={`${panelStyles} min-w-0 p-5`}
+            >
+              <h3 id={`skills-${index}`} className="mb-4 eyebrow text-sm">
+                {name}
+              </h3>
+              <ul className="flex flex-wrap gap-1.5">
+                {skills.map(({ name: skill, icon }) => (
+                  <li key={skill}>
+                    <TechChip name={skill} icon={icon} tone="neutral" />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
       </div>
     </Section>
   )

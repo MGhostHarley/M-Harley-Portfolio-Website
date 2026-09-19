@@ -1,41 +1,48 @@
 import type { ReactNode } from 'react'
 
-/** Page-width column shared by every section, including the hero. */
-export const sectionStyles =
-  'relative z-2 mx-auto w-[calc(100%-40px)] scroll-mt-20 py-10 md:w-[min(100%-48px,1160px)] md:py-16'
+/**
+ * Full-width band with a top rule and a soft glow, so every section has a
+ * clear start. scroll-mt-16 matches the nav height, so a nav link lands with
+ * no sliver of the previous section showing.
+ */
+export const sectionBandStyles =
+  'scroll-mt-16 border-t border-line bg-[linear-gradient(to_bottom,rgb(17_14_42/55%),transparent_240px)] py-20 md:py-28'
+
+/** Section heading type, shared by pages that build their own header. */
+export const headingStyles =
+  'font-serif text-[length:clamp(2.4rem,4.6vw,3.6rem)] leading-[1.1] font-bold'
 
 interface SectionProps {
   id: string
+  eyebrow: string
   title: string
-  /** One or more introductory paragraphs shown under the heading. */
-  intro?: string | string[]
+  /** Short text shown opposite the heading on wide screens. */
+  aside?: ReactNode
   children: ReactNode
 }
 
 export default function Section({
   id,
+  eyebrow,
   title,
-  intro = [],
+  aside,
   children,
 }: SectionProps) {
   const headingId = `${id}-heading`
   return (
-    <section id={id} className={sectionStyles} aria-labelledby={headingId}>
-      <h2
-        id={headingId}
-        className="mb-7.5 text-[length:clamp(2rem,4.5vw,3.75rem)] leading-[1.2] font-bold"
-      >
-        {title}
-      </h2>
-      {[intro].flat().map((paragraph) => (
-        <p
-          key={paragraph}
-          className="my-[1em] max-w-[1000px] text-[length:clamp(1.05rem,2vw,1.4rem)] leading-[1.7]"
-        >
-          {paragraph}
-        </p>
-      ))}
-      {children}
+    <section id={id} aria-labelledby={headingId} className={sectionBandStyles}>
+      <div className="page">
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow text-sm md:text-base">{eyebrow}</p>
+            <h2 id={headingId} className={`mt-4 ${headingStyles}`}>
+              {title}
+            </h2>
+          </div>
+          {aside && <div className="max-w-[30em] text-muted">{aside}</div>}
+        </div>
+        {children}
+      </div>
     </section>
   )
 }

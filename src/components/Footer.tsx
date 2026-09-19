@@ -1,33 +1,29 @@
-import { textLinkStyles } from './styles'
+import { profile, resumeUrl } from '../data/profile'
 
-interface FooterProps {
-  paused: boolean
-  reducedMotion: boolean
-  onTogglePause: () => void
-}
+const links = [
+  { title: 'Case studies', href: '/case-studies/' },
+  { title: 'FAQ', href: '/faq/' },
+  { title: 'Resume', href: resumeUrl, download: true },
+]
 
-export default function Footer({
-  paused,
-  reducedMotion,
-  onTogglePause,
-}: FooterProps) {
-  const label = reducedMotion
-    ? 'Reduced motion enabled'
-    : paused
-      ? 'Resume animation'
-      : 'Pause animation'
+// Extra bottom padding below lg keeps the links clear of the floating pause button.
+export default function Footer() {
   return (
-    <footer className="relative z-1 mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-3 p-6">
-      <p className="my-4">© {new Date().getFullYear()} Michael Harley</p>
-      <button
-        type="button"
-        className={`${textLinkStyles} px-1.5 py-px`}
-        onClick={onTogglePause}
-        disabled={reducedMotion}
-        aria-pressed={paused || reducedMotion}
-      >
-        {label}
-      </button>
+    <footer className="relative z-1 border-t border-line">
+      <div className="page flex flex-wrap items-center justify-between gap-4 pt-10 pb-20 text-sm text-faint lg:pb-10">
+        <p>
+          © {new Date().getFullYear()} Em Harley · {profile.name}
+        </p>
+        <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          {links.map(({ title, href, download }) => (
+            <li key={title}>
+              <a href={href} download={download} className="hover:text-accent">
+                {title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </footer>
   )
 }

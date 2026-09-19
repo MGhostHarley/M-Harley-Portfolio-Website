@@ -10,19 +10,21 @@ import { EmailTimeoutError, sendContactEmail } from '../utils/sendEmail'
 import { buttonStyles } from './styles'
 
 interface Status {
-  type: 'idle' | 'sending' | 'success' | 'error'
+  /** 'timedOut': the message may still arrive, so sending again is blocked. */
+  type: 'idle' | 'sending' | 'success' | 'error' | 'timedOut'
   message: string
 }
 
 const statusColors: Record<Status['type'], string> = {
   idle: '',
   sending: '',
-  success: 'text-success',
+  success: 'text-live',
   error: 'text-error',
+  timedOut: 'text-gold',
 }
 
 const inputStyles =
-  'block w-full rounded-lg border border-line bg-surface-raised px-4 py-3.5 text-snow aria-[invalid=true]:border-error'
+  'block w-full rounded-lg border border-faint/60 bg-night/60 px-4 py-3 text-snow focus:border-accent aria-[invalid=true]:border-error'
 
 const emptyForm: ContactValues = { name: '', email: '', message: '' }
 
@@ -36,10 +38,10 @@ const messages = {
   invalid: 'Please check the highlighted fields.',
   sending: 'Sending your message…',
   failed:
-    'Your message could not be sent. Please try again or use the email link below.',
+    'Your message could not be sent. Please try again in a moment, or reach me on LinkedIn.',
   // The request may still complete after we stop waiting, so don't invite a resend.
   timedOut:
-    'This is taking longer than expected, and your message may still arrive. Rather than resending, please use the email link below.',
+    'This is taking longer than expected, and your message may still arrive. Rather than resending, please reach me on LinkedIn.',
 }
 
 const fields: {
@@ -60,6 +62,7 @@ export default function ContactForm({ className }: { className?: string }) {
   // A ref, not state, so a rapid double submit can't slip past before re-render.
   const inFlight = useRef(false)
   const sending = status.type === 'sending'
+  const blocked = sending || status.type === 'timedOut'
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -71,7 +74,7 @@ export default function ContactForm({ className }: { className?: string }) {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (inFlight.current) return
+    if (inFlight.current || blocked) return
 
     // Pretend a bot submission succeeded so it has no reason to retry.
     const honeypot = event.currentTarget.elements.namedItem(HONEYPOT_NAME)
@@ -101,13 +104,11 @@ export default function ContactForm({ className }: { className?: string }) {
       // EmailJS rejects with { status, text }; the text names the cause,
       // e.g. an expired Gmail connection in the EmailJS dashboard.
       console.error('Contact form: message not sent', error)
-      setStatus({
-        type: 'error',
-        message:
-          error instanceof EmailTimeoutError
-            ? messages.timedOut
-            : messages.failed,
-      })
+      setStatus(
+        error instanceof EmailTimeoutError
+          ? { type: 'timedOut', message: messages.timedOut }
+          : { type: 'error', message: messages.failed },
+      )
     } finally {
       inFlight.current = false
     }
@@ -167,18 +168,14 @@ export default function ContactForm({ className }: { className?: string }) {
               />
             )}
             {error && (
-              <p id={errorId} className="my-4 leading-normal text-error">
+              <p id={errorId} className="mt-2 text-sm text-error">
                 {error}
               </p>
             )}
           </div>
         )
       })}
-      <button
-        type="submit"
-        className={buttonStyles.secondary}
-        disabled={sending}
-      >
+      <button type="submit" className={buttonStyles.primary} disabled={blocked}>
         {sending ? 'Sending…' : 'Send message'}
       </button>
       <p

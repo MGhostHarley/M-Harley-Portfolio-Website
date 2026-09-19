@@ -51,6 +51,6 @@ export function toTemplateParams(data: ContactForm) {
     from_email: data.email,
     message: data.message,
     to_name: profile.preferredName,
-    to_email: profile.email,
+    // No to_email: the EmailJS template has the recipient address set.
   }
 }

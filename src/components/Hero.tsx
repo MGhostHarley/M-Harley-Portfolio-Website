@@ -1,10 +1,7 @@
 import { profile } from '../data/profile'
+import PhotoCarousel from './PhotoCarousel'
 import SocialLinks from './SocialLinks'
-import { sectionStyles } from './Section'
-import { buttonStyles } from './styles'
-import portrait from '../assets/optimized/portrait.webp'
-
-const paragraphStyles = 'my-4.5 text-[1.15rem] leading-[1.7]'
+import { buttonStyles, highlightStyles } from './styles'
 
 export default function Hero() {
   // Text on either side of the highlight keeps its spaces, e.g. "Michael " + "".
@@ -12,50 +9,42 @@ export default function Hero() {
     profile.highlightedName,
   )
   return (
-    <div className="relative before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-hero">
-      <section
-        id="home"
-        className={`${sectionStyles} grid grid-cols-1 items-center gap-8 pt-25 md:min-h-[min(900px,100svh)] md:grid-cols-[1.1fr_1fr] md:gap-10 md:pt-32.5 lg:gap-20`}
-        aria-labelledby="home-heading"
-      >
-        <div>
-          <h1
-            id="home-heading"
-            className="mb-6 text-[length:clamp(2.5rem,10vw,3.8rem)] leading-[1.2] font-bold md:text-[length:clamp(2.75rem,5vw,4.5rem)]"
-          >
-            {beforeHighlight}
-            <span className="inline-block px-3 pb-3 text-snow bg-brush text-shadow-[0_2px_5px_var(--color-ink)]">
-              {profile.highlightedName}
-            </span>
-            {afterHighlight}
-          </h1>
-          <p className={`${paragraphStyles} font-bold text-lavender`}>
-            {profile.title}
-          </p>
-          <p className={paragraphStyles}>{profile.introduction}</p>
-          <p className={paragraphStyles}>{profile.currentContext}</p>
-          <div className="mt-7.5 flex flex-wrap gap-3">
-            <a className={buttonStyles.primary} href="#contact">
-              Contact me
-            </a>
-            <a className={buttonStyles.secondary} href="#projects">
-              View my work
-            </a>
-          </div>
-          <SocialLinks />
+    <header
+      id="home"
+      className="page grid flex-1 content-center items-center gap-10 py-12 md:grid-cols-[1.35fr_0.65fr] md:gap-16 md:py-16"
+    >
+      <div>
+        <p className="eyebrow text-xs md:text-sm">
+          {profile.title} · {profile.location.split(',')[0]}
+        </p>
+        <h1 className="mt-5 mb-7 font-serif text-[length:clamp(2.8rem,6vw,4.6rem)] leading-[1.08] font-bold">
+          {beforeHighlight}
+          <span className="inline-block px-3.5 pb-2.5 bg-brush text-shadow-[0_2px_6px_var(--color-ink)]">
+            {profile.highlightedName}
+          </span>
+          {afterHighlight}
+        </h1>
+        <p className="mb-4 text-xl leading-relaxed text-snow">
+          Most people call me{' '}
+          <mark className={`${highlightStyles} font-semibold`}>
+            {profile.preferredName}
+          </mark>
+          .
+        </p>
+        <p className="mb-8 max-w-[38em] text-lg leading-relaxed text-body">
+          {profile.introduction}
+        </p>
+        <div className="flex flex-wrap gap-3.5">
+          <a className={buttonStyles.primary} href="/case-studies/">
+            Read case studies <span aria-hidden="true">→</span>
+          </a>
+          <a className={buttonStyles.secondary} href="#contact">
+            Get in touch
+          </a>
         </div>
-        {/* From md up, an offset outline frame sits behind the portrait. */}
-        <div className="relative w-full max-w-70 justify-self-center md:max-w-100 md:justify-self-end md:before:absolute md:before:inset-[-30px_30px_30px_-30px] md:before:-z-1 md:before:rounded-2xl md:before:border-2 md:before:border-accent">
-          <img
-            src={portrait}
-            width="600"
-            height="800"
-            alt={`${profile.name} with his dog`}
-            fetchPriority="high"
-            className="h-auto w-full rounded-2xl border-2 border-accent"
-          />
-        </div>
-      </section>
-    </div>
+        <SocialLinks className="mt-7" />
+      </div>
+      <PhotoCarousel />
+    </header>
   )
 }

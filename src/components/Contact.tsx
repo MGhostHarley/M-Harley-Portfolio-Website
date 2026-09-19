@@ -1,38 +1,30 @@
-import Section from './Section'
+import ContactDialog from './ContactDialog'
 import SocialLinks from './SocialLinks'
-import ContactForm from './ContactForm'
-import ContactScene from './ContactScene'
-import { profile } from '../data/profile'
-import { textLinkStyles } from './styles'
-
-const paragraphStyles = 'my-4 leading-[1.7]'
-const noteStyles =
-  'my-[1em] text-[0.9rem] leading-[1.7] text-muted wrap-anywhere'
+import { headingStyles, sectionBandStyles } from './Section'
 
 export default function Contact() {
   return (
-    <Section id="contact" title="Contact">
-      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
-        <div className="min-w-0 rounded-2xl bg-surface p-5.5 md:p-8">
-          <p className={paragraphStyles}>
-            Have a question or a project to discuss? Send me a message.
-          </p>
-          <SocialLinks />
-          <ContactForm className="mt-7" />
-          <p className={noteStyles}>
-            You can also email{' '}
-            <a className={textLinkStyles} href={`mailto:${profile.email}`}>
-              {profile.email}
-            </a>
-            .
-          </p>
-          <p className={noteStyles}>
-            Messages are delivered through EmailJS. Your name, email, and
-            message are used to respond to your inquiry.
+    <section
+      id="contact"
+      aria-labelledby="contact-heading"
+      className={sectionBandStyles}
+    >
+      <div className="page grid items-center gap-10 rounded-3xl border border-line bg-[linear-gradient(135deg,rgb(193_118_223/14%),rgb(112_215_250/6%)),var(--color-surface)] p-7 md:grid-cols-[1.1fr_0.9fr] md:p-14">
+        <div>
+          <p className="eyebrow text-sm md:text-base">Contact</p>
+          <h2 id="contact-heading" className={`mt-4 mb-4 ${headingStyles}`}>
+            Let's talk
+          </h2>
+          <p className="text-lg text-muted">
+            Hiring for a senior role, or working on a hard data problem? I'd
+            like to hear about it.
           </p>
         </div>
-        <ContactScene />
+        <div className="flex flex-col items-start gap-6 md:items-end">
+          <ContactDialog />
+          <SocialLinks />
+        </div>
       </div>
-    </Section>
+    </section>
   )
 }

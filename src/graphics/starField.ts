@@ -17,33 +17,91 @@ const STAR_COUNT = { mobile: 650, desktop: 1500 }
 // Seconds per radian of rotation around each axis.
 const ROTATION_PERIOD = { x: 10, y: 15 }
 
+// A fixed seed gives every page the same sky, so moving between pages is seamless.
+const SEED = 20260918
+
+/** Small deterministic random number generator (mulberry32). */
+function seededRandom(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
 /** Uniformly distributed points inside a sphere. */
 function createStars(count: number): Star[] {
+  const random = seededRandom(SEED)
   return Array.from({ length: count }, () => {
-    const radius = SPHERE_RADIUS * Math.cbrt(Math.random())
-    const azimuth = Math.random() * Math.PI * 2
-    const vertical = Math.random() * 2 - 1
+    const radius = SPHERE_RADIUS * Math.cbrt(random())
+    const azimuth = random() * Math.PI * 2
+    const vertical = random() * 2 - 1
     const ring = Math.sqrt(1 - vertical * vertical)
     return {
       x: radius * ring * Math.cos(azimuth),
       y: radius * ring * Math.sin(azimuth),
       z: radius * vertical,
-      size: 0.6 + Math.random() * 0.9,
-      brightness: 0.35 + Math.random() * 0.55,
+      size: 0.6 + random() * 0.9,
+      brightness: 0.35 + random() * 0.55,
     }
   })
 }
 
-/** Draws a slowly rotating sphere of stars onto a viewport-sized canvas. */
-export function createStarField(canvas: HTMLCanvasElement) {
+// Where the sky was when the last page closed, so the next page picks up there.
+const STORAGE_KEY = 'star-field-angles'
+interface SavedAngles {
+  x: number
+  y: number
+  time: number
+}
+
+function readSavedAngles(): SavedAngles | undefined {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? 'null')
+    return typeof saved?.x === 'number' ? saved : undefined
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Draws a slowly rotating sphere of stars onto a viewport-sized canvas.
+ * `startPaused` keeps a paused sky exactly where the previous page left it.
+ */
+export function createStarField(
+  canvas: HTMLCanvasElement,
+  { startPaused = false } = {},
+) {
   const context = canvas.getContext('2d')
   if (!context) return undefined
 
   let stars: Star[] = []
   let width = 0
   let height = 0
-  let angleX = 0
-  let angleY = 0
+  // Continue from the last page's sky, advanced by the time since if it was
+  // moving; on a first visit, start from the clock.
+  const saved = readSavedAngles()
+  const now = Date.now()
+  const elapsed = saved
+    ? startPaused
+      ? 0
+      : (now - saved.time) / 1000
+    : now / 1000
+  const turn = Math.PI * 2
+  let angleX = ((saved?.x ?? 0) - elapsed / ROTATION_PERIOD.x) % turn
+  let angleY = ((saved?.y ?? 0) - elapsed / ROTATION_PERIOD.y) % turn
+
+  const saveAngles = () => {
+    try {
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ x: angleX, y: angleY, time: Date.now() }),
+      )
+    } catch {
+      // Without storage the next page starts from the clock instead.
+    }
+  }
 
   const draw = () => {
     const cosX = Math.cos(angleX)
@@ -99,12 +157,15 @@ export function createStarField(canvas: HTMLCanvasElement) {
 
   resize()
   window.addEventListener('resize', resize)
+  window.addEventListener('pagehide', saveAngles)
 
   return {
     setAnimating: loop.setRunning,
     dispose() {
       loop.setRunning(false)
+      saveAngles()
       window.removeEventListener('resize', resize)
+      window.removeEventListener('pagehide', saveAngles)
     },
   }
 }

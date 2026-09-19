@@ -1,97 +1,70 @@
 import Section from './Section'
 import ExternalLink from './ExternalLink'
+import TechChip from './TechChip'
 import { projects } from '../data/projects'
-import type { Project } from '../data/types'
-import { textLinkStyles } from './styles'
-
-function ProjectCard({
-  name,
-  description,
-  tags,
-  image,
-  demo,
-  source,
-}: Project) {
-  const links = [
-    {
-      label: 'Live demo',
-      url: demo,
-      unavailable: 'Live demo temporarily unavailable.',
-    },
-    {
-      label: 'Source code',
-      url: source,
-      unavailable: 'Source repository is private.',
-    },
-  ]
-  const previewUrl = demo ?? source
-  const preview = (
-    <img
-      src={image}
-      alt={`${name} application preview`}
-      width="960"
-      height="540"
-      loading="lazy"
-      decoding="async"
-      className="aspect-video h-auto w-full rounded-[10px] bg-surface-sunken object-contain"
-    />
-  )
-  return (
-    <article className="rounded-2xl bg-surface-raised p-5">
-      {previewUrl ? (
-        <ExternalLink
-          href={previewUrl}
-          aria-label={`Open ${name} ${demo ? 'demo' : 'source'} (new tab)`}
-        >
-          {preview}
-        </ExternalLink>
-      ) : (
-        preview
-      )}
-      <h3 className="mt-5.5 mb-3 text-[1.5rem] font-bold">{name}</h3>
-      <p className="my-4 leading-[1.7] text-muted">{description}</p>
-      <ul
-        className="my-4 flex flex-wrap gap-3.5 text-accent"
-        aria-label="Technologies"
-      >
-        {tags.map((tag) => (
-          <li key={tag}>{tag}</li>
-        ))}
-      </ul>
-      <div className="mt-5 flex flex-wrap items-center gap-3 md:gap-4">
-        {links.map(({ label, url, unavailable }) =>
-          url ? (
-            <ExternalLink
-              key={label}
-              className={textLinkStyles}
-              href={url}
-              aria-label={`View ${name} ${label.toLowerCase()} (new tab)`}
-            >
-              {label} ↗
-            </ExternalLink>
-          ) : (
-            <span key={label} className="text-[0.85rem] text-muted">
-              {unavailable}
-            </span>
-          ),
-        )}
-      </div>
-    </article>
-  )
-}
+import { panelStyles } from './styles'
 
 export default function Projects() {
   return (
-    <Section
-      id="projects"
-      title="My Work"
-      intro="Selected personal projects, with live demos and public source code where available."
-    >
-      <div className="mt-9 grid grid-cols-1 gap-7 md:grid-cols-2">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} {...project} />
-        ))}
-      </div>
+    <Section id="projects" eyebrow="Side projects" title="Built for fun">
+      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {projects.map(
+          ({ id, name, description, tags, image, demo, source }) => (
+            <li
+              key={id}
+              className={`${panelStyles} flex flex-col overflow-hidden`}
+            >
+              <img
+                src={image}
+                alt={`${name} application preview`}
+                width="960"
+                height="540"
+                loading="lazy"
+                decoding="async"
+                className="aspect-video w-full border-b border-line object-cover"
+              />
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="font-semibold">{name}</h3>
+                <p className="mt-1.5 mb-4 text-sm leading-normal text-muted">
+                  {description}
+                </p>
+                <ul
+                  className="mb-5 flex flex-wrap gap-1.5"
+                  aria-label="Technologies"
+                >
+                  {tags.map((tag) => (
+                    <li key={tag}>
+                      <TechChip name={tag} />
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-auto flex gap-4 font-mono text-xs">
+                  {demo && (
+                    <ExternalLink
+                      className="text-accent hover:underline"
+                      href={demo}
+                      aria-label={`${name} live demo (new tab)`}
+                    >
+                      Live ↗
+                    </ExternalLink>
+                  )}
+                  {source ? (
+                    <ExternalLink
+                      className="text-accent hover:underline"
+                      href={source}
+                      aria-label={`${name} source code (new tab)`}
+                    >
+                      Source ↗
+                    </ExternalLink>
+                  ) : (
+                    <span className="text-faint">Source private</span>
+                  )}
+                </div>
+              </div>
+            </li>
+          ),
+        )}
+      </ul>
     </Section>
   )
 }

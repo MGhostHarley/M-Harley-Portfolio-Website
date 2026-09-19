@@ -1,12 +1,21 @@
 // Tailwind class lists shared by elements that look the same in several places.
 
 const buttonBase =
-  'inline-flex min-h-12 items-center justify-center rounded-[5px] border border-violet px-6 py-3 font-bold transition-[filter] duration-200 hover:brightness-115'
+  'inline-flex items-center justify-center gap-2 rounded-lg border px-5 py-2.5 text-[0.95rem] font-medium transition-colors'
 
 export const buttonStyles = {
-  primary: `${buttonBase} bg-linear-to-r/srgb from-accent via-pink to-gold text-ink`,
-  secondary: `${buttonBase} bg-surface-raised text-snow`,
+  primary: `${buttonBase} border-accent bg-accent text-ink hover:bg-[#9ae4fc]`,
+  secondary: `${buttonBase} border-accent/35 text-snow hover:border-accent`,
+  small:
+    'inline-flex items-center gap-2 rounded-lg border border-accent/35 px-3.5 py-1.5 text-sm font-medium hover:border-accent',
 }
 
 export const textLinkStyles =
-  'inline-flex min-h-11 items-center text-link underline underline-offset-4 wrap-anywhere'
+  'text-accent underline underline-offset-4 hover:text-snow'
+
+/** Translucent bordered panel used for cards. */
+export const panelStyles = 'rounded-2xl border border-line bg-surface'
+
+/** Gradient highlighter, as on "Em" in the hero and the nav brand. */
+export const highlightStyles =
+  'rounded-md bg-linear-to-r/srgb from-accent via-pink to-gold px-1.5 text-ink'

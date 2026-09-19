@@ -7,10 +7,14 @@ export default function Stars() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fieldRef = useRef<ReturnType<typeof createStarField>>(undefined)
   const motionEnabled = useMotionEnabled()
+  // Read once at creation: a paused sky should open where the last page froze it.
+  const startedPaused = useRef(!motionEnabled)
 
   useEffect(() => {
     if (!canvasRef.current) return
-    const field = createStarField(canvasRef.current)
+    const field = createStarField(canvasRef.current, {
+      startPaused: startedPaused.current,
+    })
     fieldRef.current = field
     return () => field?.dispose()
   }, [])
@@ -22,7 +26,7 @@ export default function Stars() {
 
   return (
     <canvas
-      className="pointer-events-none fixed inset-0 z-1 size-full"
+      className="pointer-events-none fixed inset-0 z-1 size-full [view-transition-name:stars]"
       ref={canvasRef}
       aria-hidden="true"
     />

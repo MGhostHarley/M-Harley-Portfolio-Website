@@ -1,62 +1,117 @@
-@import '@fontsource/playfair-display/latin-400.css';
 @import '@fontsource/playfair-display/latin-600.css';
 @import '@fontsource/playfair-display/latin-700.css';
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/latin-500.css';
 /* Only scan src/ for class names (not docs or design mockups). */
 @import 'tailwindcss' source('.');
 
 /*
  * Design tokens. Each --color-* becomes utilities such as bg-night,
- * text-muted, and border-line; each --breakpoint-* becomes a variant.
+ * text-muted, and border-line; each --font-* becomes font-serif etc.
  */
 @theme {
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
-  --default-font-family: var(--font-serif);
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1060px;
+  /* rem, like Tailwind's built-in sm/xl, so all breakpoints sort correctly. */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 66.25rem; /* 1060px */
 
   --color-night: #050816;
-  --color-snow: #f3f3f3;
-  --color-muted: #c2bdd6;
-  --color-line: #77718b;
+  --color-snow: #eeecf6;
+  --color-body: #d7d3e8;
+  --color-muted: #a9a3c2;
+  --color-faint: #77718b;
+  --color-line: rgb(194 189 214 / 14%);
+  --color-surface: rgb(17 14 42 / 72%);
   --color-accent: #70d7fa;
-  --color-link: #9ddff7;
-  --color-lavender: #e3c2fa;
   --color-violet: #c176df;
-  --color-violet-deep: #a855d0;
   --color-pink: #e6a7ed;
   --color-gold: #f7ce70;
+  --color-live: #5ee6a8;
   --color-ink: #080b1c;
   --color-error: #ffb3c7;
-  --color-success: #a8efd8;
-  --color-surface-sunken: #090325;
-  --color-surface: #100d25;
-  --color-surface-raised: #151030;
-  --color-surface-card: #1d1836;
+
+  --container-page: 1120px;
 }
 
-/* Background images live here so Vite can resolve and fingerprint the URLs. */
-@utility bg-hero {
-  background: url('./assets/optimized/hero-background.webp') center / cover
-    no-repeat;
-}
 @utility bg-brush {
-  background: url('./assets/brush.png') center / 125% 185% no-repeat;
+  background: url('./assets/brush.png') center / 120% 170% no-repeat;
+}
+
+/* Centered content column with side gutters. */
+@utility page {
+  width: min(100% - 2rem, var(--container-page));
+  margin-inline: auto;
+  @media (width >= 48rem) {
+    width: min(100% - 3rem, var(--container-page));
+  }
+}
+
+/* Uppercase monospace label used above headings. Size it with text-*. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/*
+ * Cross-page transitions (Chrome, Edge, Safari 18.2+; other browsers just
+ * navigate). The nav and star field keep their names, so they hold still while
+ * the page content fades and rises into place.
+ */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: 180ms ease-in both page-out;
+}
+::view-transition-new(root) {
+  animation: 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both page-in;
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
 }
 
 /* Site-wide element defaults. Everything else is utilities in the components. */
 @layer base {
   html {
     color-scheme: dark;
-    line-height: normal;
-    scroll-behavior: smooth;
-    scroll-padding-top: 88px;
-    text-rendering: optimizeLegibility;
-    font-synthesis: none;
+    scroll-behavior: smooth; /* Anchors set their own scroll-mt-* offsets. */
+    -webkit-font-smoothing: antialiased;
     @apply bg-night text-snow;
   }
   body {
     min-width: 320px;
+    line-height: 1.65;
+  }
+  /* Long words (e.g. "Medicare-compliant") break instead of overflowing at large text sizes. */
+  h1,
+  h2,
+  h3,
+  p,
+  dt,
+  dd,
+  summary {
+    overflow-wrap: break-word;
   }
   a,
   button {
@@ -70,7 +125,7 @@
   }
   :focus-visible {
     outline: 3px solid var(--color-accent);
-    outline-offset: 5px;
+    outline-offset: 4px;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
