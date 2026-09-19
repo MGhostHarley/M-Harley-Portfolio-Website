@@ -28,10 +28,18 @@ This runs the TypeScript type check, accessibility-aware linting, formatting che
 
 ## Structure
 
+The site has three pages, each its own HTML entry so it works on plain static hosting. Moving between them uses cross-document view transitions where supported, and the star field is seeded so every page shows the same sky.
+
+- `/` (`index.html` → `src/main.tsx` → `pages/HomePage.tsx`)
+- `/case-studies/` (`case-studies/index.html` → `src/case-studies.tsx` → `pages/CaseStudiesPage.tsx`)
+- `/faq/` (`faq/index.html` → `src/faq.tsx` → `pages/FaqPage.tsx`)
+
 ```
 src/
-  data/        Editable content (profile, experience, projects, skills) and its types
-  components/  One component per page section, plus small shared pieces
+  pages/       One component per page, built from sections inside a shared Layout
+  components/  One component per section, plus shared pieces (Section, SocialLinks, ContactDialog)
+  data/        Editable content and its types
+  assets/      Images; photos/ holds the rotating hero photos (4:5, 800×1000)
   graphics/    Framework-free canvas code: star field and animation loop
   hooks/       useMediaQuery, useActiveSection
   utils/       Contact validation and EmailJS delivery
@@ -42,21 +50,29 @@ src/
 
 Styles are Tailwind CSS v4 utility classes written directly on the components, mobile-first: unprefixed classes apply to phones, `md:` from 768px, and `lg:` from 1060px.
 
-- `src/index.css` holds the design tokens (`@theme`: colors, fonts, breakpoints), two background-image utilities, and a small base layer for site-wide element defaults.
+- `src/index.css` holds the design tokens (`@theme`: colors, fonts, breakpoints), the `page` (content column), `eyebrow` (small mono label), and `bg-brush` utilities, and a small base layer.
 - Each `--color-*` token becomes utilities such as `bg-night`, `text-muted`, or `border-line`.
-- Class lists reused in several places live in `src/components/styles.ts` (buttons, text links) and `sectionStyles` in `Section.tsx`.
+- Class lists reused in several places live in `src/components/styles.ts` (buttons, chips, panels, text links).
 - Prettier sorts class names automatically (`prettier-plugin-tailwindcss`).
 
 ## Content
 
-- `src/data/profile.ts`: biography, contact links, FAQs, site description, canonical URL.
-- `src/data/experience.ts`: résumé-derived work history.
-- `src/data/skills.ts`: services, skills, and technology icons.
-- `src/data/projects.ts`: project descriptions and demo/source links. Omit `demo` or `source` to show the "unavailable" or "private" note.
+- `src/data/profile.ts`: biography, social links, navigation, current stack, site description. Plain data only, because vite.config.ts imports it directly.
+- `src/data/experience.ts`: work history from the September 2026 resume, with a one-line summary per role.
+- `src/data/caseStudies.ts`: case studies, each with its key decision.
+- `src/data/impact.ts`: the impact numbers with company logos (`src/assets/logos`), and the AI highlights in About.
+- `src/data/faqs.ts`: FAQ questions, grouped.
+- `src/data/tech.ts`: looks up the brand logo and color for any technology name shown as a chip.
+- `src/data/skills.ts`: skills grouped as on the resume, with Simple Icons logos or text badges.
+- `src/data/projects.ts`: side projects. Omit `demo` or `source` to show the "private" note.
+- `src/data/photos.ts`: hero photos and their alt text.
+- `public/Michael-Harley-Resume.pdf`: the downloadable resume, a public copy with phone number and email removed.
 
-The supplied July 2026 résumé is the source for historical roles. The owner confirmed Pacific Fusion and planned work using Kafka, Go, Python, and TypeScript for device telemetry, analysis, monitoring, and control. This is described as planned work, not completed achievements. The exact job title and start date remain to be supplied.
+Page title, description, canonical URL, social metadata, and structured profile data in both HTML pages are filled from profile.ts by the `siteMetadata` plugin in vite.config.ts, which also writes robots.txt and a sitemap listing every page. Stars and the hero photos respect reduced motion and the footer pause button.
 
-Page title, description, canonical URL, social metadata, and structured profile data in index.html are filled from profile.ts by the `siteMetadata` plugin in vite.config.ts. Stars respect reduced motion, can be paused using the footer button, and stop when the page is hidden.
+## Favicon and social preview
+
+`public/favicon.svg`, `favicon-32x32.png`, `apple-touch-icon.png`, and `social-preview.png` are generated from the site's fonts, colors, and hero photo by `scripts/brand-assets.py` (needs Python with `pillow` and `fonttools`). Rerun it after changing the name, title, stack, or photo.
 
 ## Contact delivery
 
