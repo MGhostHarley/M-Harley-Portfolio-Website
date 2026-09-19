@@ -1,3 +1,5 @@
+import type { SimpleIcon } from 'simple-icons'
+
 export type SocialIcon = 'linkedin' | 'x' | 'github'
 
 export interface SocialProfile {
@@ -13,9 +15,7 @@ export interface Profile {
   preferredName: string
   title: string
   location: string
-  email: string
   url: string
-  description: string
   introduction: string
   currentContext: string
   summary: string
@@ -25,13 +25,10 @@ export interface Profile {
 }
 
 export interface NavLink {
-  id: string
   title: string
-}
-
-export interface Faq {
-  question: string
-  answer: string
+  href: string
+  /** Section id on the home page, used to highlight the link while scrolling. */
+  sectionId?: string
 }
 
 export interface Experience {
@@ -40,6 +37,8 @@ export interface Experience {
   title: string
   date: string
   location?: string
+  /** One line for the compact experience list. */
+  summary: string
   points: string[]
 }
 
@@ -55,12 +54,62 @@ export interface Project {
   source?: string
 }
 
-export interface IconItem {
+export interface Metric {
+  value: string
+  label: string
+  company: string
+}
+
+export interface Faq {
+  question: string
+  answer: string
+}
+
+export interface FaqGroup {
+  title: string
+  faqs: Faq[]
+}
+
+export interface Skill {
   name: string
-  icon: string
+  /** Brand icon; skills without one are shown as a text badge. */
+  icon?: SimpleIcon
+  /** Short badge text when there is no icon, e.g. "C#". */
+  badge?: string
 }
 
 export interface SkillGroup {
   name: string
-  items: string
+  skills: Skill[]
+}
+
+export interface Photo {
+  src: string
+  alt: string
+}
+
+export interface DiagramNode {
+  title: string
+  detail: string
+  kind?: 'ai' | 'store'
+}
+
+export interface CaseStudy {
+  id: string
+  sector: string
+  title: string
+  /** Key into companyLogos. */
+  company: string
+  /** Client or team within the company, if any. */
+  detail?: string
+  period: string
+  result: { value: string; label: string }
+  problem: string
+  approach: string
+  outcome: string
+  /** Rows of the architecture diagram, each read left to right. */
+  diagram: { label?: string; nodes: DiagramNode[] }[]
+  /** The main trade-off: a short headline and why it mattered. */
+  keyDecision: { title: string; detail: string }
+  stack: string[]
 }
