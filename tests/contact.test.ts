@@ -46,7 +46,6 @@ describe('toTemplateParams', () => {
       from_email: 'ada@example.com',
       message: 'Hello',
       to_name: profile.preferredName,
-      to_email: profile.email,
     })
   })
 })

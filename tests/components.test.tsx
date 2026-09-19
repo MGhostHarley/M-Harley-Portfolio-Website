@@ -8,9 +8,16 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react'
+import { act } from 'react'
 import userEvent from '@testing-library/user-event'
+import ContactDialog from '../src/components/ContactDialog'
 import ContactForm from '../src/components/ContactForm'
-import Footer from '../src/components/Footer'
+import PhotoCarousel from '../src/components/PhotoCarousel'
+import { MotionContext } from '../src/motion'
+import { photos } from '../src/data/photos'
+import { resumeUrl } from '../src/data/profile'
+import Layout from '../src/components/Layout'
+import PauseButton from '../src/components/PauseButton'
 import Navbar from '../src/components/Navbar'
 import { EmailTimeoutError, sendContactEmail } from '../src/utils/sendEmail'
 
@@ -75,27 +82,35 @@ describe('ContactForm', () => {
   })
 
   it.each([
-    ['a timeout', new EmailTimeoutError(), 'may still arrive'],
-    ['a failure', new Error('Unavailable'), 'could not be sent'],
-  ])('explains %s without clearing the message', async (_, error, text) => {
-    vi.mocked(sendContactEmail).mockRejectedValue(error)
-    const logError = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const user = userEvent.setup()
-    render(<ContactForm />)
+    // A timed-out message may still arrive, so sending again is blocked.
+    ['a timeout', new EmailTimeoutError(), 'may still arrive', true],
+    ['a failure', new Error('Unavailable'), 'could not be sent', false],
+  ])(
+    'explains %s without clearing the message',
+    async (_, error, text, blocked) => {
+      vi.mocked(sendContactEmail).mockRejectedValue(error)
+      const logError = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const user = userEvent.setup()
+      render(<ContactForm />)
 
-    await fillAndSubmit(user)
+      await fillAndSubmit(user)
 
-    await waitFor(() =>
-      expect(screen.getByRole('status').textContent).toContain(text),
-    )
-    expect(
-      screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
-    ).toBe('Hello Em')
-    expect(logError).toHaveBeenCalledWith(
-      'Contact form: message not sent',
-      error,
-    )
-  })
+      await waitFor(() =>
+        expect(screen.getByRole('status').textContent).toContain(text),
+      )
+      expect(
+        screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
+      ).toBe('Hello Em')
+      expect(logError).toHaveBeenCalledWith(
+        'Contact form: message not sent',
+        error,
+      )
+      expect(
+        screen.getByRole<HTMLButtonElement>('button', { name: 'Send message' })
+          .disabled,
+      ).toBe(blocked)
+    },
+  )
 
   it('silently accepts honeypot submissions without sending email', async () => {
     const user = userEvent.setup()
@@ -130,21 +145,159 @@ describe('Navbar', () => {
   })
 })
 
-describe('Footer', () => {
-  it('exposes animation state and calls the pause control', async () => {
-    const onTogglePause = vi.fn()
+describe('PauseButton', () => {
+  it('reports its state and toggles', async () => {
+    const onToggle = vi.fn()
     const user = userEvent.setup()
-    render(
-      <Footer
-        paused={false}
-        reducedMotion={false}
-        onTogglePause={onTogglePause}
-      />,
+    const { rerender } = render(
+      <PauseButton paused={false} onToggle={onToggle} />,
     )
 
     const button = screen.getByRole('button', { name: 'Pause animation' })
     expect(button.getAttribute('aria-pressed')).toBe('false')
     await user.click(button)
-    expect(onTogglePause).toHaveBeenCalledOnce()
+    expect(onToggle).toHaveBeenCalledOnce()
+
+    rerender(<PauseButton paused onToggle={onToggle} />)
+    expect(
+      screen
+        .getByRole('button', { name: 'Resume animation' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true')
+  })
+})
+
+describe('Navbar links', () => {
+  it('offers the resume as a download and marks the current page', () => {
+    render(<Navbar currentPage="/case-studies/" />)
+    const resume = screen.getByRole('link', { name: /Resume/ })
+    expect(resume.getAttribute('href')).toBe(resumeUrl)
+    expect(resume.hasAttribute('download')).toBe(true)
+    expect(
+      screen
+        .getByRole('link', { name: 'Case studies' })
+        .getAttribute('aria-current'),
+    ).toBe('page')
+  })
+})
+
+describe('ContactDialog', () => {
+  it('opens the contact form as a modal', async () => {
+    // jsdom has <dialog> but not showModal/close.
+    HTMLDialogElement.prototype.showModal = vi.fn(function (
+      this: HTMLDialogElement,
+    ) {
+      this.open = true
+    })
+    HTMLDialogElement.prototype.close = vi.fn(function (
+      this: HTMLDialogElement,
+    ) {
+      this.open = false
+    })
+    const user = userEvent.setup()
+    render(<ContactDialog />)
+
+    await user.click(screen.getByRole('button', { name: /Send me a message/ }))
+    expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledOnce()
+    expect(screen.getByLabelText('Your name')).toBeTruthy()
+
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+    expect(HTMLDialogElement.prototype.close).toHaveBeenCalledOnce()
+  })
+})
+
+describe('PhotoCarousel', () => {
+  const visibleAlt = () =>
+    screen
+      .getAllByRole('img', { hidden: true })
+      .find((img) => img.getAttribute('aria-hidden') === 'false')
+      ?.getAttribute('alt')
+
+  it('advances every 15 seconds and jumps to a chosen photo', () => {
+    vi.useFakeTimers()
+    render(<PhotoCarousel />)
+    expect(visibleAlt()).toBe(photos[0].alt)
+
+    act(() => vi.advanceTimersByTime(14_000))
+    expect(visibleAlt()).toBe(photos[0].alt)
+    act(() => vi.advanceTimersByTime(1_000))
+    expect(visibleAlt()).toBe(photos[1].alt)
+
+    fireEvent.click(
+      screen.getByRole('button', { name: `Show photo 4 of ${photos.length}` }),
+    )
+    expect(visibleAlt()).toBe(photos[3].alt)
+    vi.useRealTimers()
+  })
+
+  it('only loads the photo on show and the next one', () => {
+    vi.useFakeTimers()
+    render(<PhotoCarousel />)
+    const loaded = () => screen.getAllByRole('img', { hidden: true }).length
+    expect(loaded()).toBe(2)
+    act(() => vi.advanceTimersByTime(15_000))
+    expect(loaded()).toBe(3)
+    vi.useRealTimers()
+  })
+
+  it('stays on one photo when animation is paused', () => {
+    vi.useFakeTimers()
+    render(
+      <MotionContext value={false}>
+        <PhotoCarousel />
+      </MotionContext>,
+    )
+    act(() => vi.advanceTimersByTime(60_000))
+    expect(visibleAlt()).toBe(photos[0].alt)
+    vi.useRealTimers()
+  })
+})
+
+describe('Layout', () => {
+  it('scrolls to the section named in the URL once the page renders', () => {
+    // Arriving at /#experience from another page.
+    window.history.replaceState(null, '', '/#experience')
+    const scrollIntoView = vi.fn()
+    Element.prototype.scrollIntoView = scrollIntoView
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe = vi.fn()
+        disconnect = vi.fn()
+      },
+    )
+    vi.stubGlobal('matchMedia', () => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }))
+
+    render(
+      <Layout>
+        <section id="experience">Experience</section>
+      </Layout>,
+    )
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'instant' })
+    window.history.replaceState(null, '', '/')
+  })
+})
+
+describe('Layout with a malformed URL fragment', () => {
+  it('renders instead of crashing', () => {
+    window.history.replaceState(null, '', '/#%E0%A4%A')
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
+    vi.stubGlobal('matchMedia', () => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }))
+    render(
+      <Layout>
+        <p>Still here</p>
+      </Layout>,
+    )
+    expect(screen.getByText('Still here')).toBeTruthy()
+    window.history.replaceState(null, '', '/')
   })
 })
