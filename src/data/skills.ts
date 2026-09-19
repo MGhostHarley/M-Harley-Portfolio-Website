@@ -1,0 +1,85 @@
+import {
+  siClaude,
+  siDjango,
+  siDocker,
+  siElasticsearch,
+  siFastapi,
+  siFlask,
+  siGit,
+  siGo,
+  siInfluxdb,
+  siApachekafka,
+  siJavascript,
+  siMariadb,
+  siMongodb,
+  siMqtt,
+  siMui,
+  siNextdotjs,
+  siNodedotjs,
+  siPostgresql,
+  siPython,
+  siPytorch,
+  siReact,
+  siTailwindcss,
+  siTensorflow,
+  siTimescale,
+  siTypescript,
+} from 'simple-icons'
+import type { SkillGroup } from './types'
+
+// From the September 2026 resume. Brands without a Simple Icons logo
+// (AWS, OpenAI, C#) and general skills are shown as text badges.
+export const skillGroups: SkillGroup[] = [
+  {
+    name: 'Languages',
+    skills: [
+      { name: 'Go', icon: siGo },
+      { name: 'Python', icon: siPython },
+      { name: 'TypeScript', icon: siTypescript },
+      { name: 'JavaScript', icon: siJavascript },
+      { name: 'C#', badge: 'C#' },
+      { name: 'SQL', icon: siPostgresql },
+    ],
+  },
+  {
+    name: 'Data & infrastructure',
+    skills: [
+      { name: 'Kafka', icon: siApachekafka },
+      { name: 'MQTT', icon: siMqtt },
+      { name: 'InfluxDB', icon: siInfluxdb },
+      { name: 'TimescaleDB', icon: siTimescale },
+      { name: 'MariaDB', icon: siMariadb },
+      { name: 'MongoDB', icon: siMongodb },
+      { name: 'Elasticsearch', icon: siElasticsearch },
+      { name: 'AWS', badge: 'AWS' },
+      { name: 'Docker', icon: siDocker },
+      { name: 'Git', icon: siGit },
+      { name: 'CI/CD', badge: 'CI' },
+    ],
+  },
+  {
+    name: 'Frameworks',
+    skills: [
+      { name: 'React', icon: siReact },
+      { name: 'Next.js', icon: siNextdotjs },
+      { name: 'Node.js', icon: siNodedotjs },
+      { name: 'Django', icon: siDjango },
+      { name: 'Flask', icon: siFlask },
+      { name: 'FastAPI', icon: siFastapi },
+      { name: 'Tailwind CSS', icon: siTailwindcss },
+      { name: 'Material UI', icon: siMui },
+      { name: 'REST APIs', badge: 'API' },
+    ],
+  },
+  {
+    name: 'AI / ML',
+    skills: [
+      { name: 'ChatGPT', badge: 'GPT' },
+      { name: 'Claude', icon: siClaude },
+      { name: 'TensorFlow', icon: siTensorflow },
+      { name: 'PyTorch', icon: siPytorch },
+      { name: 'Machine learning', badge: 'ML' },
+      { name: 'OCR', badge: 'OCR' },
+    ],
+  },
+]

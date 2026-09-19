@@ -1,9 +1,0 @@
-{
-    "extends": "standard",
-    "rules": {
-        "semi": [ "error", "never" ],
-        "quotes": ["error", "single", { "avoidEscape": true }],
-        "comma-dangle": [2, "always-multiline"]
-
-    }
-}
