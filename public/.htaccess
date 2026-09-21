@@ -1,0 +1,6 @@
+# Send www.emharley.com to the bare domain so there's one address for search engines.
+# Hostinger's CDN already redirects http to https, so this only checks the host.
+# Checking %{HTTPS} here could loop, because the CDN talks to the server over http.
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.emharley\.com$ [NC]
+RewriteRule ^ https://emharley.com%{REQUEST_URI} [L,R=301]
