@@ -5,7 +5,7 @@ Builds the favicon set and social preview from the site's own fonts and colors.
     python3 scripts/brand-assets.py
 
 Run from the repository root after `npm install` (the fonts come from node_modules).
-Writes public/favicon.svg, favicon-32x32.png, apple-touch-icon.png, social-preview.png.
+Writes public/favicon.svg, favicon.ico, favicon-32x32.png, apple-touch-icon.png, social-preview.png.
 """
 import math
 from pathlib import Path
@@ -208,7 +208,9 @@ def social_preview():
 if __name__ == '__main__':
     (PUBLIC / 'favicon.svg').write_text(favicon_svg())
     favicon_png(32).save(PUBLIC / 'favicon-32x32.png')
+    # For crawlers and tools that request /favicon.ico without reading the page.
+    favicon_png(48).save(PUBLIC / 'favicon.ico', sizes=[(16, 16), (32, 32), (48, 48)])
     favicon_png(180).convert('RGB').save(PUBLIC / 'apple-touch-icon.png')  # iOS rounds the corners itself
     social_preview().save(PUBLIC / 'social-preview.png', optimize=True)
-    for f in ['favicon.svg', 'favicon-32x32.png', 'apple-touch-icon.png', 'social-preview.png']:
+    for f in ['favicon.svg', 'favicon.ico', 'favicon-32x32.png', 'apple-touch-icon.png', 'social-preview.png']:
         print(f, (PUBLIC / f).stat().st_size // 1024, 'kB')
