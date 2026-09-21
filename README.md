@@ -36,7 +36,6 @@ EmailJS sends the contact form. It lets a static site send email without a backe
 
 For quality, there's Vitest with Testing Library, ESLint with accessibility rules, and Prettier. A GitHub Actions workflow runs all of them on every pull request, and every merge to `main` deploys to Hostinger automatically.
 
-
 ## Structure
 
 The site has three pages, each its own HTML entry so it works on plain static hosting. Moving between them uses cross-document view transitions where supported, and the star field is seeded so every page shows the same sky.
@@ -56,4 +55,3 @@ src/
   utils/       Contact validation and EmailJS delivery
   motion.ts    Context that pauses animation (footer toggle or reduced-motion preference)
 ```
-
