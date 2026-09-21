@@ -29,6 +29,8 @@ jobs:
         with:
           name: dist
           path: dist
+          # Keep dot-files such as .htaccess, which the artifact action skips by default.
+          include-hidden-files: true
 
   deploy:
     needs: check
