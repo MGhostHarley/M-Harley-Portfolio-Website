@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react'
 import { act } from 'react'
 import userEvent from '@testing-library/user-event'
@@ -20,6 +21,8 @@ import Layout from '../src/components/Layout'
 import PauseButton from '../src/components/PauseButton'
 import Navbar from '../src/components/Navbar'
 import TechChip from '../src/components/TechChip'
+import About from '../src/components/About'
+import { skillGroups } from '../src/data/skills'
 import { EmailTimeoutError, sendContactEmail } from '../src/utils/sendEmail'
 
 const luminance = (channels: number[]) => {
@@ -47,6 +50,24 @@ describe('TechChip', () => {
       const contrast =
         (luminance(foreground!) + 0.05) / (luminance(background) + 0.05)
       expect(contrast).toBeGreaterThanOrEqual(4.5)
+    },
+  )
+})
+
+describe('About skills', () => {
+  it.each(skillGroups.map((group) => [group.name, group.skills.length]))(
+    'shows at most 5 %s skills before "+N more" when there are more than 6',
+    (name, count) => {
+      render(<About />)
+      const group = within(screen.getByRole('region', { name }))
+      const [firstList] = group.getAllByRole('list')
+      if (count > 6) {
+        expect(within(firstList).getAllByRole('listitem')).toHaveLength(5)
+        expect(group.getByText(`+${count - 5} more`)).toBeTruthy()
+      } else {
+        expect(within(firstList).getAllByRole('listitem')).toHaveLength(count)
+        expect(group.queryByText(/more$/)).toBeNull()
+      }
     },
   )
 })

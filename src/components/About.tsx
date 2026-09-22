@@ -2,7 +2,41 @@ import Section from './Section'
 import TechChip from './TechChip'
 import { profile } from '../data/profile'
 import { skillGroups } from '../data/skills'
+import type { Skill } from '../data/types'
 import { panelStyles } from './styles'
+
+/** Enough to skim; the rest wait behind "+N more". Order in the data is priority. */
+const VISIBLE_SKILLS = 5
+
+function SkillChips({ skills }: { skills: Skill[] }) {
+  return (
+    <ul className="flex flex-wrap gap-1.5">
+      {skills.map(({ name, icon }) => (
+        <li key={name}>
+          <TechChip name={name} icon={icon} tone="neutral" />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function SkillList({ skills }: { skills: Skill[] }) {
+  // Hiding a single skill behind a toggle costs more than showing it.
+  if (skills.length <= VISIBLE_SKILLS + 1) return <SkillChips skills={skills} />
+  const more = skills.slice(VISIBLE_SKILLS)
+  return (
+    <>
+      <SkillChips skills={skills.slice(0, VISIBLE_SKILLS)} />
+      <details className="group mt-1">
+        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center text-sm text-accent hover:text-snow [&::-webkit-details-marker]:hidden">
+          <span className="group-open:hidden">+{more.length} more</span>
+          <span className="hidden group-open:inline">Show fewer</span>
+        </summary>
+        <SkillChips skills={more} />
+      </details>
+    </>
+  )
+}
 
 export default function About() {
   return (
@@ -28,13 +62,7 @@ export default function About() {
               >
                 {name}
               </h3>
-              <ul className="flex flex-wrap gap-1.5">
-                {skills.map(({ name: skill, icon }) => (
-                  <li key={skill}>
-                    <TechChip name={skill} icon={icon} tone="neutral" />
-                  </li>
-                ))}
-              </ul>
+              <SkillList skills={skills} />
             </section>
           ))}
         </div>
