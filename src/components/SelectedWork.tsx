@@ -2,8 +2,10 @@ import Section from './Section'
 import CompanyBadge from './CompanyBadge'
 import TechChip from './TechChip'
 import { caseStudies } from '../data/caseStudies'
-import { scaleHighlights } from '../data/impact'
+import { aiHighlights, scaleHighlights } from '../data/impact'
 import { panelStyles, textLinkStyles } from './styles'
+
+const aiCaseStudies = new Set(aiHighlights.map((item) => item.caseStudyId))
 
 /** The headline results, each leading into the case study behind it. */
 export default function SelectedWork() {
@@ -37,7 +39,14 @@ export default function SelectedWork() {
                 href={`/case-studies/#${id}`}
                 className={`${panelStyles} group flex h-full flex-col p-6 transition-colors hover:border-accent/50 md:p-7 ${lead ? 'lg:p-10' : ''}`}
               >
-                <CompanyBadge company={company} />
+                <div className="flex items-center justify-between gap-3">
+                  <CompanyBadge company={company} />
+                  {aiCaseStudies.has(id) && (
+                    <span className="rounded-full border border-coral/40 px-2.5 py-0.5 text-xs font-semibold text-coral">
+                      AI
+                    </span>
+                  )}
+                </div>
                 {lead && detail && (
                   <p className="mt-1.5 text-sm text-muted">{detail}</p>
                 )}
@@ -85,14 +94,16 @@ export default function SelectedWork() {
         })}
       </ul>
 
-      <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 rounded-2xl border border-line px-7 py-5">
-        <span className="text-sm font-semibold text-muted">Also at scale</span>
+      <div className="mt-6 flex flex-col gap-x-10 gap-y-4 rounded-2xl border border-line px-6 py-5 md:flex-row md:flex-wrap md:items-center md:px-7">
+        <span className="text-sm font-semibold text-muted">
+          More results at scale
+        </span>
         {scaleHighlights.map(({ value, label, company }) => (
           <p
             key={label}
             className="flex flex-wrap items-center gap-x-3 gap-y-1"
           >
-            <span className="text-2xl font-semibold tracking-tight">
+            <span className="text-2xl font-semibold tracking-tight text-gold">
               {value}
             </span>
             <span className="text-muted">{label}</span>

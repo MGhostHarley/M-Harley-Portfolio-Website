@@ -32,9 +32,16 @@ export const scaleHighlights: Metric[] = [
 
 /**
  * Production AI work, shown under the experience list. These deliberately avoid the numbers
- * already in the impact row and case studies, so each result appears once.
+ * already in the impact row and case studies, so each result appears once. Work
+ * with a caseStudyId already has its own case study, so the panel links to it
+ * instead of retelling it, and its Selected Work card is tagged as AI.
  */
-export const aiHighlights = [
+export const aiHighlights: {
+  title: string
+  detail: string
+  company: string
+  caseStudyId?: string
+}[] = [
   {
     title: 'PII redaction',
     detail:
@@ -52,11 +59,13 @@ export const aiHighlights = [
     detail:
       'LLM-generated Medicare documents that users create on demand, without waiting on developers.',
     company: 'Deloitte',
+    caseStudyId: 'medicare-documents',
   },
   {
     title: 'Support triage',
     detail:
       'An LLM that answers the basics and routes anything complex to a trusted person.',
     company: '24 Hour Fitness',
+    caseStudyId: 'support-triage',
   },
 ]

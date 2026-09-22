@@ -110,7 +110,7 @@ export default function CaseStudy(study: CaseStudyData) {
         </p>
       </header>
 
-      <dl className="my-9 grid max-w-[68ch] gap-6">
+      <dl className="my-9 grid max-w-[36em] gap-6">
         {steps.map(({ key, label }) => (
           <div key={key}>
             <dt className="mb-1.5 font-semibold text-snow">{label}</dt>
@@ -125,7 +125,7 @@ export default function CaseStudy(study: CaseStudyData) {
         <h3 className="text-lg font-semibold text-snow">
           <span className="text-gold">Key decision:</span> {keyDecision.title}
         </h3>
-        <p className="mt-1.5 max-w-[68ch] text-body">{keyDecision.detail}</p>
+        <p className="mt-1.5 max-w-[36em] text-body">{keyDecision.detail}</p>
       </div>
 
       <ul className="mt-6 flex flex-wrap gap-2" aria-label="Technologies">

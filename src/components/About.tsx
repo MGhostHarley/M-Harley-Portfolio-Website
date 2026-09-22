@@ -52,7 +52,7 @@ export default function About() {
   return (
     <Section id="about" title={`Hi, I'm ${profile.preferredName}.`}>
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
-        <div className="max-w-[68ch] text-lg text-body">
+        <div className="max-w-[36em] text-lg text-body">
           <p className="mb-5">{profile.summary}</p>
           <p className="mb-8">{profile.approach}</p>
           <h3 className="mb-1.5 font-semibold text-snow">Education</h3>

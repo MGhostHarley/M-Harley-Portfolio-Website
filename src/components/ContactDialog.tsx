@@ -36,9 +36,14 @@ export default function ContactDialog({
         {label}
       </button>
       {/* showModal() traps focus, closes on Escape, and returns focus to the button. */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- Escape already closes the dialog; the backdrop click is its pointer equivalent. */}
       <dialog
         ref={dialogRef}
         aria-labelledby={titleId}
+        // A click on the dialog element itself is a click on the backdrop.
+        onClick={(event) => {
+          if (event.target === event.currentTarget) close()
+        }}
         className="m-auto w-[min(100%-2rem,560px)] rounded-2xl border border-line bg-dialog p-0 text-snow backdrop:bg-night/80 backdrop:backdrop-blur-sm"
       >
         <div className="p-6 md:p-8">

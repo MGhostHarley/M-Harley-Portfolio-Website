@@ -58,7 +58,7 @@ export default function FaqPage() {
                         <PlusIcon />
                       </span>
                     </summary>
-                    <p className="max-w-[68ch] px-6 pb-6 text-body">{answer}</p>
+                    <p className="max-w-[40em] px-6 pb-6 text-body">{answer}</p>
                   </details>
                 ))}
               </div>

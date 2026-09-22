@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { profile, resumeUrl } from '../data/profile'
 
 const links = [
@@ -6,11 +7,15 @@ const links = [
   { title: 'Resume', href: resumeUrl, download: true },
 ]
 
-// Extra bottom padding below lg keeps the links clear of the floating pause button.
-export default function Footer() {
+/**
+ * children: extra controls for the end of the row (the pause button on
+ * phones). Extra bottom padding from md to lg keeps the links clear of the
+ * floating pause button there.
+ */
+export default function Footer({ children }: { children?: ReactNode }) {
   return (
     <footer className="relative z-1 border-t border-line">
-      <div className="page flex flex-wrap items-center justify-between gap-4 pt-10 pb-20 text-sm text-faint lg:pb-10">
+      <div className="page flex flex-wrap items-center justify-between gap-4 pt-10 pb-10 text-sm text-faint md:pb-20 lg:pb-10">
         <p>
           © {new Date().getFullYear()} Em Harley · {profile.name}
         </p>
@@ -27,6 +32,7 @@ export default function Footer() {
             </li>
           ))}
         </ul>
+        {children}
       </div>
     </footer>
   )

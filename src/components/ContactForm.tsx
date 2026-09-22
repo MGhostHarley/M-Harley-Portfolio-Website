@@ -78,7 +78,19 @@ export default function ContactForm({ className }: { className?: string }) {
   ) => {
     const { name, value } = event.target
     setValues((previous) => ({ ...previous, [name]: value }))
-    setErrors((previous) => ({ ...previous, [name]: undefined }))
+    updateError(name as ContactField, undefined)
+  }
+
+  // Sets one field's error, and drops the "check the highlighted fields"
+  // status once nothing is highlighted any more.
+  const updateError = (name: ContactField, error: string | undefined) => {
+    const next = { ...errors, [name]: error }
+    setErrors(next)
+    if (
+      status.message === messages.invalid &&
+      !Object.values(next).some(Boolean)
+    )
+      setStatus({ type: 'idle', message: '' })
   }
 
   // Check a field once it's filled in and left, so a mistyped email shows
@@ -88,8 +100,7 @@ export default function ContactForm({ className }: { className?: string }) {
   ) => {
     const name = event.target.name as ContactField
     if (!values[name].trim()) return
-    const fieldError = validateContact(values).errors[name]
-    setErrors((previous) => ({ ...previous, [name]: fieldError }))
+    updateError(name, validateContact(values).errors[name])
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -164,7 +175,9 @@ export default function ContactForm({ className }: { className?: string }) {
           onChange: handleChange,
           onBlur: handleBlur,
           required: true,
-          maxLength: maxLengths[name],
+          // The message has no hard cap, so a long paste isn't silently cut;
+          // validation explains the limit instead.
+          maxLength: name === 'message' ? undefined : maxLengths[name],
           disabled: sending,
           'aria-invalid': Boolean(error),
           'aria-describedby': error ? errorId : undefined,

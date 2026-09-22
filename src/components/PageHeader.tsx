@@ -21,7 +21,7 @@ export default function PageHeader({ title, children }: PageHeaderProps) {
         />
         <div>
           <h1 className={`mb-4 ${headingStyles}`}>{title}</h1>
-          <div className="max-w-[60ch] text-lg text-muted">{children}</div>
+          <div className="max-w-[36em] text-lg text-muted">{children}</div>
         </div>
       </div>
     </header>

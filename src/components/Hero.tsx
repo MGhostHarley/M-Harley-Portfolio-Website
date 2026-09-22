@@ -24,14 +24,14 @@ export default function Hero() {
           {afterHighlight}
         </h1>
         <p className="mb-6 text-lg text-muted">
-          {profile.title} at {experiences[0].company},{' '}
+          {experiences[0].title} at {experiences[0].company},{' '}
           {profile.location.split(',')[0]}
         </p>
         <p className="mb-4 text-xl leading-relaxed text-snow">
           Most people call me{' '}
           <strong className="font-semibold">{profile.preferredName}</strong>.
         </p>
-        <p className="mb-8 max-w-[62ch] text-lg leading-relaxed text-body">
+        <p className="mb-8 max-w-[36em] text-lg leading-relaxed text-body">
           {profile.introduction}
         </p>
         <div className="flex flex-wrap gap-3.5">
