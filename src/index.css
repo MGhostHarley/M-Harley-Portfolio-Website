@@ -22,15 +22,17 @@
   --color-snow: #eeecf6;
   --color-body: #d7d3e8;
   --color-muted: #a9a3c2;
-  --color-faint: #77718b;
+  --color-faint: #85809b;
   --color-line: rgb(194 189 214 / 14%);
   --color-surface: rgb(17 14 42 / 72%);
   --color-accent: #70d7fa;
+  --color-accent-hover: #9ae4fc;
   --color-violet: #c176df;
   --color-pink: #e6a7ed;
   --color-gold: #f7ce70;
   --color-live: #5ee6a8;
   --color-ink: #080b1c;
+  --color-dialog: #0c0a24;
   --color-error: #ffb3c7;
 
   --container-page: 1120px;

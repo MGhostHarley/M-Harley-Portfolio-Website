@@ -43,7 +43,7 @@ export default function PhotoCarousel() {
             ),
         )}
       </div>
-      <figcaption className="mt-3 flex justify-center gap-2">
+      <figcaption className="mt-3 flex justify-center">
         {photos.map(({ alt }, index) => (
           <button
             key={alt}
@@ -51,10 +51,10 @@ export default function PhotoCarousel() {
             onClick={() => setCurrent(index)}
             aria-label={`Show photo ${index + 1} of ${photos.length}`}
             aria-current={index === current}
-            className="grid size-6 place-items-center"
+            className="grid size-11 place-items-center"
           >
             <span
-              className={`block h-1.5 rounded-full transition-all ${index === current ? 'w-5 bg-accent' : 'w-1.5 bg-faint'}`}
+              className={`block h-1.5 rounded-full transition-[width,background-color] ${index === current ? 'w-5 bg-accent' : 'w-1.5 bg-faint'}`}
             />
           </button>
         ))}

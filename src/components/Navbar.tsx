@@ -72,7 +72,7 @@ export default function Navbar({ currentPage }: NavbarProps) {
                 href={link.href}
                 aria-current={currentFor(link)}
                 onClick={close}
-                className="inline-flex min-h-10 items-center rounded-lg px-3 hover:text-snow aria-[current=location]:bg-accent/10 aria-[current=location]:text-accent aria-[current=page]:bg-accent/10 aria-[current=page]:text-accent max-lg:w-full"
+                className="inline-flex min-h-11 items-center rounded-lg px-3 hover:text-snow aria-[current=location]:bg-accent/10 aria-[current=location]:text-accent aria-[current=page]:bg-accent/10 aria-[current=page]:text-accent max-lg:w-full"
               >
                 {link.title}
               </a>

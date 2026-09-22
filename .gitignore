@@ -25,3 +25,12 @@ dist-ssr
 
 # Local design explorations
 design/
+
+# Local Impeccable design tooling
+.claude/
+.github/agents/
+.github/hooks/
+.github/skills/
+.impeccable/
+DESIGN.md
+PRODUCT.md

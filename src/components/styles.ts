@@ -4,10 +4,10 @@ const buttonBase =
   'inline-flex items-center justify-center gap-2 rounded-lg border px-5 py-2.5 text-[0.95rem] font-medium transition-colors'
 
 export const buttonStyles = {
-  primary: `${buttonBase} border-accent bg-accent text-ink hover:bg-[#9ae4fc]`,
+  primary: `${buttonBase} border-accent bg-accent text-ink hover:bg-accent-hover`,
   secondary: `${buttonBase} border-accent/35 text-snow hover:border-accent`,
   small:
-    'inline-flex items-center gap-2 rounded-lg border border-accent/35 px-3.5 py-1.5 text-sm font-medium hover:border-accent',
+    'inline-flex min-h-11 items-center gap-2 rounded-lg border border-accent/35 px-3.5 py-1.5 text-sm font-medium hover:border-accent',
 }
 
 export const textLinkStyles =

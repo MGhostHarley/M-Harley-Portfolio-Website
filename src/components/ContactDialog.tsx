@@ -19,7 +19,7 @@ export default function ContactDialog() {
       <dialog
         ref={dialogRef}
         aria-labelledby="contact-dialog-title"
-        className="m-auto w-[min(100%-2rem,560px)] rounded-2xl border border-line bg-[#0c0a24] p-0 text-snow backdrop:bg-night/80 backdrop:backdrop-blur-sm"
+        className="m-auto w-[min(100%-2rem,560px)] rounded-2xl border border-line bg-dialog p-0 text-snow backdrop:bg-night/80 backdrop:backdrop-blur-sm"
       >
         <div className="p-6 md:p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
@@ -38,7 +38,7 @@ export default function ContactDialog() {
               type="button"
               onClick={close}
               aria-label="Close"
-              className="grid size-10 shrink-0 place-items-center rounded-lg border border-line text-lg hover:border-accent"
+              className="grid size-11 shrink-0 place-items-center rounded-lg border border-line text-lg hover:border-accent"
             >
               <span aria-hidden="true">✕</span>
             </button>

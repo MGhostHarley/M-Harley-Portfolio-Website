@@ -19,7 +19,37 @@ import { resumeUrl } from '../src/data/profile'
 import Layout from '../src/components/Layout'
 import PauseButton from '../src/components/PauseButton'
 import Navbar from '../src/components/Navbar'
+import TechChip from '../src/components/TechChip'
 import { EmailTimeoutError, sendContactEmail } from '../src/utils/sendEmail'
+
+const luminance = (channels: number[]) => {
+  const [r, g, b] = channels.map((channel) => {
+    const value = channel / 255
+    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+describe('TechChip', () => {
+  it.each(['Kafka', 'Next.js', 'Python'])(
+    'keeps the %s brand label readable on a tinted dark badge',
+    (name) => {
+      render(<TechChip name={name} />)
+      const chip = screen.getByText(name)
+      const foreground = chip.style
+        .getPropertyValue('--brand')
+        .match(/\d+/g)
+        ?.map(Number)
+      expect(foreground).toHaveLength(3)
+      const background = foreground!.map((channel, index) =>
+        Math.round(0.9 * [5, 8, 22][index] + 0.1 * channel),
+      )
+      const contrast =
+        (luminance(foreground!) + 0.05) / (luminance(background) + 0.05)
+      expect(contrast).toBeGreaterThanOrEqual(4.5)
+    },
+  )
+})
 
 // Keep the real module (for EmailTimeoutError) but never send real email.
 vi.mock('../src/utils/sendEmail', async (importOriginal) => ({
