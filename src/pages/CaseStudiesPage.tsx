@@ -13,7 +13,7 @@ export default function CaseStudiesPage() {
   const active = useActiveSection(studyIds) ?? studyIds[0]
   return (
     <Layout currentPage="/case-studies/">
-      <PageHeader eyebrow="Case studies" title="How I build production systems">
+      <PageHeader title="How I build production systems">
         <strong className="font-medium text-snow">{profile.name}</strong>,{' '}
         {profile.title.toLowerCase()}. Three systems I built, how I approached
         them, and what changed as a result.
@@ -22,9 +22,7 @@ export default function CaseStudiesPage() {
       <div className="page grid grid-cols-1 gap-14 pt-14 lg:grid-cols-[220px_1fr] lg:pt-16">
         <nav aria-label="Case studies" className="max-lg:hidden">
           <div className="sticky top-24">
-            <p className="font-mono text-xs tracking-widest text-faint uppercase">
-              Case studies
-            </p>
+            <p className="text-sm font-semibold text-muted">Case studies</p>
             <ol className="mt-4 border-l border-line">
               {caseStudies.map(({ id, title, company }) => (
                 <li key={id}>

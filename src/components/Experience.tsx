@@ -8,7 +8,6 @@ export default function Experience() {
   return (
     <Section
       id="experience"
-      eyebrow="Experience"
       title="Ten years in production"
       spacing="tight"
       aside={

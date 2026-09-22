@@ -14,16 +14,16 @@ export default function Hero() {
       className="page grid flex-1 content-center items-center gap-10 py-12 md:grid-cols-[1.35fr_0.65fr] md:gap-16 md:py-16"
     >
       <div>
-        <p className="eyebrow text-xs md:text-sm">
-          {profile.title} · {profile.location.split(',')[0]}
-        </p>
-        <h1 className="mt-5 mb-7 font-serif text-[length:clamp(2.8rem,6vw,4.6rem)] leading-[1.08] font-bold">
+        <h1 className="mb-4 font-serif text-[length:clamp(2.8rem,6vw,4.6rem)] leading-[1.08] font-bold">
           {beforeHighlight}
           <span className="inline-block px-3.5 pb-2.5 bg-brush text-shadow-[0_2px_6px_var(--color-ink)]">
             {profile.highlightedName}
           </span>
           {afterHighlight}
         </h1>
+        <p className="mb-6 text-lg text-muted">
+          {profile.title} in {profile.location.split(',')[0]}
+        </p>
         <p className="mb-4 text-xl leading-relaxed text-snow">
           Most people call me{' '}
           <mark className={`${highlightStyles} font-semibold`}>

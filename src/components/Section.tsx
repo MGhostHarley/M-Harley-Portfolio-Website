@@ -3,7 +3,8 @@ import { headingStyles, sectionBandStyles, type SectionSpacing } from './styles'
 
 interface SectionProps {
   id: string
-  eyebrow: string
+  /** Only the hidden Projects section still uses one; visible sections let the heading speak. */
+  eyebrow?: string
   title: string
   /** Short text shown opposite the heading on wide screens. */
   aside?: ReactNode
@@ -30,8 +31,10 @@ export default function Section({
       <div className="page">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="eyebrow text-sm md:text-base">{eyebrow}</p>
-            <h2 id={headingId} className={`mt-4 ${headingStyles}`}>
+            {eyebrow && (
+              <p className="mb-4 eyebrow text-sm md:text-base">{eyebrow}</p>
+            )}
+            <h2 id={headingId} className={headingStyles}>
               {title}
             </h2>
           </div>

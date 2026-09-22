@@ -2,6 +2,7 @@ import type { CaseStudy as CaseStudyData, DiagramNode } from '../data/types'
 import TechChip from './TechChip'
 import { companyLogos } from '../data/impact'
 import { panelStyles } from './styles'
+import { ArrowRightIcon } from './icons'
 
 const nodeStyles: Record<NonNullable<DiagramNode['kind']> | 'default', string> =
   {
@@ -20,9 +21,8 @@ const steps = [
 function Diagram({ rows }: { rows: CaseStudyData['diagram'] }) {
   return (
     <figure className={`${panelStyles} p-6 md:p-7`}>
-      <figcaption className="mb-5 flex justify-between font-mono text-xs tracking-widest text-faint uppercase">
-        <span>Architecture</span>
-        <span>Simplified</span>
+      <figcaption className="mb-5 text-sm font-semibold text-muted">
+        Architecture, simplified
       </figcaption>
       <div className="grid gap-5">
         {rows.map(({ label, nodes }) => (
@@ -37,15 +37,10 @@ function Diagram({ rows }: { rows: CaseStudyData['diagram'] }) {
                   className="flex flex-col items-center md:flex-1 md:flex-row"
                 >
                   {index > 0 && (
-                    <span
-                      aria-hidden="true"
-                      className="px-2 py-1 text-faint max-md:rotate-90 md:py-0"
-                    >
-                      →
-                    </span>
+                    <ArrowRightIcon className="m-1.5 size-4 shrink-0 text-faint max-md:rotate-90" />
                   )}
                   <div
-                    className={`w-full rounded-xl border p-3.5 text-center ${nodeStyles[kind ?? 'default']}`}
+                    className={`w-full rounded-xl border p-3 text-center md:p-3.5 ${nodeStyles[kind ?? 'default']}`}
                   >
                     <b className="block text-[0.95rem] font-semibold">
                       {title}
@@ -85,10 +80,9 @@ export default function CaseStudy(study: CaseStudyData) {
     >
       <header className="grid gap-x-10 gap-y-5 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="eyebrow text-sm">{sector}</p>
           <h2
             id={`${id}-title`}
-            className="mt-2.5 text-[length:clamp(1.9rem,3.4vw,2.6rem)] leading-tight font-bold tracking-tight"
+            className="text-[length:clamp(1.9rem,3.4vw,2.6rem)] leading-tight font-bold tracking-tight"
           >
             {title}
           </h2>
@@ -103,7 +97,7 @@ export default function CaseStudy(study: CaseStudyData) {
             <span>
               <span className="block font-semibold text-accent">{company}</span>
               <span className="text-sm">
-                {[detail, period].filter(Boolean).join(' · ')}
+                {[sector, detail, period].filter(Boolean).join(' · ')}
               </span>
             </span>
           </p>
@@ -128,9 +122,8 @@ export default function CaseStudy(study: CaseStudyData) {
       <Diagram rows={diagram} />
 
       <div className="mt-6 rounded-2xl border border-gold/40 bg-gold/5 p-6">
-        <p className="eyebrow text-xs text-gold">Key decision</p>
-        <h3 className="mt-2.5 text-lg font-semibold text-snow">
-          {keyDecision.title}
+        <h3 className="text-lg font-semibold text-snow">
+          <span className="text-gold">Key decision:</span> {keyDecision.title}
         </h3>
         <p className="mt-1.5 text-body">{keyDecision.detail}</p>
       </div>

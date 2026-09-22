@@ -6,16 +6,12 @@ import { panelStyles } from './styles'
 
 export default function About() {
   return (
-    <Section
-      id="about"
-      eyebrow="About"
-      title={`Hi, I'm ${profile.preferredName}.`}
-    >
+    <Section id="about" title={`Hi, I'm ${profile.preferredName}.`}>
       <div className="grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
         <div className="text-[1.08rem] text-body">
           <p className="mb-5">{profile.summary}</p>
           <p className="mb-8">{profile.approach}</p>
-          <h3 className="mb-2 eyebrow text-sm">Education</h3>
+          <h3 className="mb-1.5 font-semibold text-snow">Education</h3>
           <p className="text-snow">{profile.education}</p>
         </div>
 
@@ -26,7 +22,10 @@ export default function About() {
               aria-labelledby={`skills-${index}`}
               className={`${panelStyles} min-w-0 p-5`}
             >
-              <h3 id={`skills-${index}`} className="mb-4 eyebrow text-sm">
+              <h3
+                id={`skills-${index}`}
+                className="mb-4 font-semibold text-snow"
+              >
                 {name}
               </h3>
               <ul className="flex flex-wrap gap-1.5">

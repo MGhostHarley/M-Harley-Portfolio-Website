@@ -3,13 +3,14 @@ import PageHeader from '../components/PageHeader'
 import ContactDialog from '../components/ContactDialog'
 import { faqGroups } from '../data/faqs'
 import { panelStyles } from '../components/styles'
+import { PlusIcon } from '../components/icons'
 
 const groupId = (index: number) => `faq-group-${index + 1}`
 
 export default function FaqPage() {
   return (
     <Layout currentPage="/faq/">
-      <PageHeader eyebrow="FAQ" title="Questions I get asked">
+      <PageHeader title="Questions I get asked">
         Quick answers about me, my work, and how to get in touch.
       </PageHeader>
 
@@ -39,7 +40,7 @@ export default function FaqPage() {
             >
               <h2
                 id={`${groupId(index)}-title`}
-                className="mb-5 eyebrow text-sm md:text-base"
+                className="mb-5 text-xl font-semibold tracking-tight"
               >
                 {title}
               </h2>
@@ -54,7 +55,7 @@ export default function FaqPage() {
                         aria-hidden="true"
                         className="grid size-8 shrink-0 place-items-center rounded-full border border-line text-accent transition-transform group-open:rotate-45"
                       >
-                        +
+                        <PlusIcon />
                       </span>
                     </summary>
                     <p className="px-6 pb-6 text-body">{answer}</p>

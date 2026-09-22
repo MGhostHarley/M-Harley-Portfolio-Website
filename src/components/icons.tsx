@@ -41,6 +41,22 @@ export function CloseIcon(props: IconProps) {
   )
 }
 
+export function ArrowRightIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </Icon>
+  )
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </Icon>
+  )
+}
+
 export function DownloadIcon(props: IconProps) {
   return (
     <Icon {...props}>

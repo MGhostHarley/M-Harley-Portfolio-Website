@@ -9,7 +9,6 @@ export default function SelectedWork() {
   return (
     <Section
       id="work"
-      eyebrow="Case studies"
       title="Problems I've solved"
       aside={
         <a className={textLinkStyles} href="/case-studies/">
@@ -58,9 +57,7 @@ export default function SelectedWork() {
       </ul>
 
       <div className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-4 rounded-2xl border border-line px-7 py-5">
-        <span className="font-mono text-xs tracking-widest text-faint uppercase">
-          Also at scale
-        </span>
+        <span className="text-sm font-semibold text-muted">Also at scale</span>
         {scaleHighlights.map(({ value, label, company }) => (
           <p
             key={label}
