@@ -2,8 +2,11 @@ import { useEffect, useRef } from 'react'
 import { useMotionEnabled } from '../motion'
 import { createStarField } from '../graphics/starField'
 
-/** The rotating star background shown behind every section. */
-export default function Stars() {
+/**
+ * The rotating star background shown behind every section. brightness (0 to
+ * 1) comes from the viewer's star brightness slider.
+ */
+export default function Stars({ brightness = 1 }: { brightness?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fieldRef = useRef<ReturnType<typeof createStarField>>(undefined)
   const motionEnabled = useMotionEnabled()
@@ -28,6 +31,7 @@ export default function Stars() {
     <canvas
       className="pointer-events-none fixed inset-0 z-1 size-full [view-transition-name:stars]"
       ref={canvasRef}
+      style={{ opacity: brightness }}
       aria-hidden="true"
     />
   )

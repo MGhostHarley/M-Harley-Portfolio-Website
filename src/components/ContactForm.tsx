@@ -281,7 +281,7 @@ export default function ContactForm({ className }: { className?: string }) {
       {offerLinkedIn && linkedIn && (
         <ExternalLink
           href={linkedIn}
-          className={`inline-flex min-h-11 items-center ${textLinkStyles}`}
+          className={`inline-flex min-h-11 items-center gap-1 ${textLinkStyles}`}
         >
           Message me on LinkedIn <span aria-hidden="true">↗</span>
         </ExternalLink>

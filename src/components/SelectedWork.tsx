@@ -15,7 +15,7 @@ export default function SelectedWork() {
       title="Problems I've solved"
       aside={
         <a
-          className={`inline-flex min-h-11 items-center ${textLinkStyles}`}
+          className={`inline-flex min-h-11 items-center gap-1 ${textLinkStyles}`}
           href="/case-studies/"
         >
           Read all case studies <span aria-hidden="true">→</span>

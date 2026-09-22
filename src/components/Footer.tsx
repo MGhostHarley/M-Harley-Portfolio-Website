@@ -7,15 +7,11 @@ const links = [
   { title: 'Resume', href: resumeUrl, download: true },
 ]
 
-/**
- * children: extra controls for the end of the row (the pause button on
- * phones). Extra bottom padding from md to lg keeps the links clear of the
- * floating pause button there.
- */
+/** children: extra controls for the end of the row (the sky controls below 1280px). */
 export default function Footer({ children }: { children?: ReactNode }) {
   return (
     <footer className="relative z-1 border-t border-line">
-      <div className="page flex flex-wrap items-center justify-between gap-4 pt-10 pb-10 text-sm text-faint md:pb-20 lg:pb-10">
+      <div className="page flex flex-wrap items-center justify-between gap-4 py-10 text-sm text-faint">
         <p>
           © {new Date().getFullYear()} Em Harley · {profile.name}
         </p>

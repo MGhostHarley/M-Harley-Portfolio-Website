@@ -19,6 +19,7 @@ import { photos } from '../src/data/photos'
 import { resumeUrl } from '../src/data/profile'
 import Layout from '../src/components/Layout'
 import PauseButton from '../src/components/PauseButton'
+import SkyControls from '../src/components/SkyControls'
 import Navbar from '../src/components/Navbar'
 import TechChip from '../src/components/TechChip'
 import About from '../src/components/About'
@@ -242,6 +243,39 @@ describe('PauseButton', () => {
         .getByRole('button', { name: 'Resume motion and photos' })
         .getAttribute('aria-pressed'),
     ).toBe('true')
+  })
+})
+
+describe('SkyControls', () => {
+  const props = {
+    brightness: 0.6,
+    paused: false,
+    onTogglePause: () => {},
+    orientation: 'vertical' as const,
+  }
+
+  it('reports star brightness as a percentage and passes changes on', () => {
+    const onBrightnessChange = vi.fn()
+    render(
+      <SkyControls
+        {...props}
+        onBrightnessChange={onBrightnessChange}
+        canPause
+      />,
+    )
+    const slider = screen.getByRole('slider', { name: 'Star brightness' })
+    expect(slider.getAttribute('aria-valuetext')).toBe('60%')
+    fireEvent.change(slider, { target: { value: '0.25' } })
+    expect(onBrightnessChange).toHaveBeenCalledWith(0.25)
+  })
+
+  it('leaves out the pause button when motion is reduced', () => {
+    render(
+      <SkyControls {...props} onBrightnessChange={() => {}} canPause={false} />,
+    )
+    expect(
+      screen.queryByRole('button', { name: /motion and photos/ }),
+    ).toBeNull()
   })
 })
 

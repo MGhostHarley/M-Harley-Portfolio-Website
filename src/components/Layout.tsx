@@ -1,12 +1,13 @@
 import { useLayoutEffect, type ReactNode } from 'react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import PauseButton from './PauseButton'
+import SkyControls from './SkyControls'
 import Stars from './Stars'
 import ContactDialog from './ContactDialog'
 import { MotionContext } from '../motion'
 import useMediaQuery from '../hooks/useMediaQuery'
 import useStoredToggle from '../hooks/useStoredToggle'
+import useStoredNumber from '../hooks/useStoredNumber'
 
 interface LayoutProps {
   /** href of this page, so the navigation can mark it as current. */
@@ -59,6 +60,17 @@ function useScrollToHash() {
 export default function Layout({ currentPage, children }: LayoutProps) {
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const [paused, togglePaused] = useStoredToggle('animation-paused')
+  const [starBrightness, setStarBrightness] = useStoredNumber(
+    'star-brightness',
+    1,
+  )
+  const skyControls = {
+    brightness: starBrightness,
+    onBrightnessChange: setStarBrightness,
+    paused,
+    onTogglePause: togglePaused,
+    canPause: !reducedMotion,
+  }
   useScrollToHash()
 
   return (
@@ -69,7 +81,7 @@ export default function Layout({ currentPage, children }: LayoutProps) {
       >
         Skip to content
       </a>
-      <Stars />
+      <Stars brightness={starBrightness} />
       <Navbar currentPage={currentPage} />
       <main
         id="main-content"
@@ -78,24 +90,21 @@ export default function Layout({ currentPage, children }: LayoutProps) {
       >
         <ContactDialog>{children}</ContactDialog>
       </main>
-      {/* With reduced motion nothing animates, so there is nothing to pause.
-          On phones the control sits in the footer instead of floating over text. */}
+      {/* Floating only from 1280px, where the page margin leaves room for it;
+          narrower screens get the same controls in the footer, over the
+          same fixed sky, so they never cover text. */}
       <Footer>
-        {!reducedMotion && (
-          <PauseButton
-            paused={paused}
-            onToggle={togglePaused}
-            className="md:hidden"
-          />
-        )}
-      </Footer>
-      {!reducedMotion && (
-        <PauseButton
-          paused={paused}
-          onToggle={togglePaused}
-          className="fixed right-4 bottom-4 z-30 bg-night/70 backdrop-blur-md [view-transition-name:pause-button] max-md:hidden"
+        <SkyControls
+          {...skyControls}
+          orientation="horizontal"
+          className="xl:hidden"
         />
-      )}
+      </Footer>
+      <SkyControls
+        {...skyControls}
+        orientation="vertical"
+        className="fixed right-4 bottom-4 z-30 [view-transition-name:sky-controls] max-xl:hidden"
+      />
     </MotionContext>
   )
 }

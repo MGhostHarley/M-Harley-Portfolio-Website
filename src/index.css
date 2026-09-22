@@ -24,11 +24,10 @@
   --color-muted: #a9a3c2;
   --color-faint: #85809b;
   --color-line: rgb(210 210 220 / 12%);
-  --color-surface: rgb(
-    22 22 26 / 80%
-  ); /* Quiet charcoal, so the star field stays the focus. */
-  --color-band: rgb(22 22 26 / 55%); /* Fade at the top of each section band. */
-  --color-strip: rgb(14 15 20 / 70%); /* The Now strip under the hero. */
+  /* Quiet, translucent charcoal, so the stars show through the cards. */
+  --color-surface: rgb(22 22 26 / 60%);
+  --color-band: rgb(22 22 26 / 40%); /* Fade at the top of each section band. */
+  --color-strip: rgb(14 15 20 / 55%); /* The Now strip under the hero. */
   --color-accent: #70d7fa;
   --color-accent-hover: #9ae4fc;
   --color-coral: #ff9478; /* Marks AI work only. */
