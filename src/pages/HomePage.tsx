@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <Layout>
       {/* The hero and the "Now" strip together fill the first screen, below the nav. */}
-      <div className="flex min-h-[calc(100svh-4rem)] flex-col">
+      <div className="flex min-h-[calc(100svh-4.25rem)] flex-col">
         <Hero />
         <NowStrip />
       </div>

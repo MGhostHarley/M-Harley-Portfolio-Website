@@ -2,11 +2,11 @@ import type { ReactNode } from 'react'
 
 /**
  * Full-width band with a top rule and a soft glow, so every section has a
- * clear start. scroll-mt-16 matches the nav height, so a nav link lands with
- * no sliver of the previous section showing.
+ * clear start. scroll-mt-17 matches the floating nav's height (4.25rem), so a
+ * nav link lands with no sliver of the previous section showing.
  */
 export const sectionBandStyles =
-  'scroll-mt-16 border-t border-line bg-[linear-gradient(to_bottom,rgb(17_14_42/55%),transparent_240px)] py-20 md:py-28'
+  'scroll-mt-17 border-t border-line bg-[linear-gradient(to_bottom,rgb(17_14_42/55%),transparent_240px)] py-20 md:py-28'
 
 /** Section heading type, shared by pages that build their own header. */
 export const headingStyles =

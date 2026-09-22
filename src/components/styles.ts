@@ -1,13 +1,11 @@
 // Tailwind class lists shared by elements that look the same in several places.
 
 const buttonBase =
-  'inline-flex items-center justify-center gap-2 rounded-lg border px-5 py-2.5 text-[0.95rem] font-medium transition-colors'
+  'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-5 py-2.5 text-[0.95rem] font-medium whitespace-nowrap transition-colors'
 
 export const buttonStyles = {
   primary: `${buttonBase} border-accent bg-accent text-ink hover:bg-accent-hover`,
   secondary: `${buttonBase} border-accent/35 text-snow hover:border-accent`,
-  small:
-    'inline-flex min-h-11 items-center gap-2 rounded-lg border border-accent/35 px-3.5 py-1.5 text-sm font-medium hover:border-accent',
 }
 
 export const textLinkStyles =
