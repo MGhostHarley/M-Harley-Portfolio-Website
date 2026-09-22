@@ -17,7 +17,11 @@ export default function Footer() {
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
           {links.map(({ title, href, download }) => (
             <li key={title}>
-              <a href={href} download={download} className="hover:text-accent">
+              <a
+                href={href}
+                download={download}
+                className="inline-flex min-h-11 items-center hover:text-accent"
+              >
                 {title}
               </a>
             </li>

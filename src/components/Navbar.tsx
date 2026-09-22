@@ -54,13 +54,16 @@ export default function Navbar({ currentPage }: NavbarProps) {
     >
       {/* A floating pill over the star field. It wraps to a second row
           instead of overflowing when text is enlarged. */}
-      <div className="relative page flex min-h-14 flex-wrap items-center gap-x-1 gap-y-1 rounded-[28px] border border-line bg-night/80 py-1 pr-1.5 pl-4 backdrop-blur-md sm:gap-x-4 sm:pl-5 lg:gap-x-6">
+      <div className="relative page flex min-h-14 flex-wrap items-center gap-x-1 gap-y-1 rounded-[28px] border border-line bg-night/90 py-1 pr-1.5 pl-4 backdrop-blur-md sm:gap-x-4 sm:pl-5 lg:gap-x-6">
         <a
           href="/"
-          className="shrink-0 font-serif text-xl font-bold"
+          className="inline-flex min-h-11 shrink-0 items-center font-serif text-xl font-bold"
           onClick={close}
         >
-          Em <span className="text-muted">Harley</span>
+          {/* Wrapped so the flex link doesn't drop the space between words. */}
+          <span>
+            Em <span className="text-muted">Harley</span>
+          </span>
         </a>
         {/* Below lg the list is a dropdown under the menu button. */}
         <ul

@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import ContactForm from './ContactForm'
 import { buttonStyles } from './styles'
+import { CloseIcon } from './icons'
 
 /** A button that opens the contact form in a modal dialog. */
 export default function ContactDialog() {
@@ -38,9 +39,9 @@ export default function ContactDialog() {
               type="button"
               onClick={close}
               aria-label="Close"
-              className="grid size-11 shrink-0 place-items-center rounded-lg border border-line text-lg hover:border-accent"
+              className="grid size-11 shrink-0 place-items-center rounded-full border border-line hover:border-accent"
             >
-              <span aria-hidden="true">✕</span>
+              <CloseIcon className="size-5" />
             </button>
           </div>
           <ContactForm />

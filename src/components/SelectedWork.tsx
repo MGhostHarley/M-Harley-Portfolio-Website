@@ -11,7 +11,10 @@ export default function SelectedWork() {
       id="work"
       title="Problems I've solved"
       aside={
-        <a className={textLinkStyles} href="/case-studies/">
+        <a
+          className={`inline-flex min-h-11 items-center ${textLinkStyles}`}
+          href="/case-studies/"
+        >
           Read all case studies →
         </a>
       }
@@ -34,7 +37,7 @@ export default function SelectedWork() {
               >
                 <CompanyBadge company={company} />
                 <p
-                  className={`mt-6 leading-none font-semibold tracking-tight text-gold ${lead ? 'text-[2.6rem] md:text-[3.4rem]' : 'text-[2.4rem]'}`}
+                  className={`mt-6 leading-none font-semibold tracking-tight text-gold ${lead ? 'text-[2.4rem] md:text-5xl' : 'text-[2.4rem]'}`}
                 >
                   {result.value}
                 </p>

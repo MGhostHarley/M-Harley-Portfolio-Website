@@ -105,11 +105,29 @@
     color-scheme: dark;
     scroll-behavior: smooth; /* Anchors set their own scroll-mt-* offsets. */
     -webkit-font-smoothing: antialiased;
+    /* Browser-drawn surfaces use the palette too. */
+    accent-color: var(--color-accent);
+    caret-color: var(--color-accent);
+    scrollbar-color: var(--color-faint) var(--color-night);
     @apply bg-night text-snow;
+  }
+  /* clip, not hidden, so the sticky nav keeps working. */
+  html,
+  body {
+    overflow-x: clip;
   }
   body {
     min-width: 320px;
     line-height: 1.65;
+  }
+  ::selection {
+    background: rgb(112 215 250 / 30%);
+    color: var(--color-snow);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
   /* Shrikhand has one weight; never fake a bold version of it. */
   .font-serif {

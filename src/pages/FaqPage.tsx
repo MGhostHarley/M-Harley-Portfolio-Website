@@ -21,7 +21,7 @@ export default function FaqPage() {
               <li key={title}>
                 <a
                   href={`#${groupId(index)}`}
-                  className="-ml-px block border-l-2 border-transparent py-2 pl-4.5 text-muted hover:border-accent hover:text-snow"
+                  className="-ml-px block border-l-2 border-transparent py-2.5 pl-4.5 text-muted hover:border-accent hover:text-snow"
                 >
                   {title}
                 </a>
