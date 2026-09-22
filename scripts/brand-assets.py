@@ -194,13 +194,14 @@ def social_preview():
     draw.text((px, role_y), '  ·  Data systems for fusion hardware testing', font=inter(23 * S, 400), fill=MUTED)
 
     # Stack chips
-    chip_font = ImageFont.truetype(str(MONO), 19 * S)
+    chip_font = inter(19 * S, 500)
     cx, cy = left, 420 * S
     for label in ['Kafka', 'Go', 'Python', 'TypeScript']:
         tw = draw.textlength(label, font=chip_font)
         box = (cx, cy, cx + tw + 32 * S, cy + 44 * S)
-        draw.rounded_rectangle(box, 22 * S, fill=ACCENT + (38,), outline=ACCENT + (170,), width=2 * S)
-        draw.text((cx + 16 * S, cy + 10 * S), label, font=chip_font, fill=ACCENT)
+        # Neutral like the site's Now strip: cyan is kept for things you can click.
+        draw.rounded_rectangle(box, 22 * S, fill=MUTED + (26,), outline=MUTED + (110,), width=2 * S)
+        draw.text((cx + 16 * S, cy + 10 * S), label, font=chip_font, fill=SNOW)
         cx = box[2] + 12 * S
 
     draw.text((left, 540 * S), 'emharley.com', font=ImageFont.truetype(str(MONO), 22 * S), fill=MUTED)
