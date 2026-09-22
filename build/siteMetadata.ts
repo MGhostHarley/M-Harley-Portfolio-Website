@@ -101,12 +101,21 @@ function structuredData(page: PageMeta) {
   const graph = [
     person,
     website,
-    {
-      '@type': page.path === '/' ? 'ProfilePage' : 'WebPage',
-      url,
-      name: page.title,
-      about: { '@id': person['@id'] },
-    },
+    page.path === '/'
+      ? {
+          // ProfilePage requires mainEntity (not about), or Search Console
+          // reports it as a critical issue.
+          '@type': 'ProfilePage',
+          url,
+          name: page.title,
+          mainEntity: { '@id': person['@id'] },
+        }
+      : {
+          '@type': 'WebPage',
+          url,
+          name: page.title,
+          about: { '@id': person['@id'] },
+        },
     ...(page.schema ?? []),
   ]
   // Escape "<" so the JSON can't close the surrounding script tag.
