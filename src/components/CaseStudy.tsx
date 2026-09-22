@@ -6,13 +6,13 @@ import { panelStyles } from './styles'
 const nodeStyles: Record<NonNullable<DiagramNode['kind']> | 'default', string> =
   {
     default: 'border-accent/40 bg-accent/5',
-    ai: 'border-violet/60 bg-violet/10',
+    ai: 'border-coral/60 bg-coral/10',
     store: 'border-dashed border-accent/40 bg-accent/5',
   }
 
 const columns = [
   { key: 'problem', label: 'Problem', border: 'border-accent' },
-  { key: 'approach', label: 'Approach', border: 'border-violet' },
+  { key: 'approach', label: 'Approach', border: 'border-accent' },
   { key: 'outcome', label: 'Outcome', border: 'border-gold' },
 ] as const
 
@@ -84,7 +84,7 @@ export default function CaseStudy(study: CaseStudyData) {
     >
       <header className="grid gap-x-10 gap-y-5 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="eyebrow text-sm text-violet">{sector}</p>
+          <p className="eyebrow text-sm">{sector}</p>
           <h2
             id={`${id}-title`}
             className="mt-2.5 text-[length:clamp(1.9rem,3.4vw,2.6rem)] leading-tight font-bold tracking-tight"

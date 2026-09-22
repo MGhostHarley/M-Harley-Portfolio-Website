@@ -5,9 +5,9 @@ export default function AiInProduction() {
   return (
     <section
       aria-labelledby="ai-heading"
-      className="mt-14 rounded-2xl border border-violet/40 bg-[linear-gradient(135deg,rgb(193_118_223/16%),rgb(112_215_250/6%))] p-7 md:p-9"
+      className="mt-14 rounded-2xl border border-coral/40 bg-surface p-7 md:p-9"
     >
-      <p className="eyebrow text-sm text-violet">AI in production</p>
+      <p className="eyebrow text-sm text-coral">AI in production</p>
       <h3
         id="ai-heading"
         className="mt-3 max-w-[34em] text-2xl leading-snug font-bold tracking-tight md:text-3xl"
@@ -16,10 +16,7 @@ export default function AiInProduction() {
       </h3>
       <dl className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {aiHighlights.map(({ title, detail, company }) => (
-          <div
-            key={title}
-            className="flex flex-col border-l-2 border-violet/60 pl-4"
-          >
+          <div key={title} className="flex flex-col">
             <dt className="text-xl font-semibold text-snow">{title}</dt>
             <dd className="mt-1.5 text-sm leading-normal text-body">
               {detail}

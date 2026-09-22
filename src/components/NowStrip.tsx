@@ -22,7 +22,7 @@ export default function NowStrip() {
           {currentStack.map((technology) => (
             <li
               key={technology}
-              className="rounded-full border border-accent/60 bg-accent/15 px-3 py-1 font-mono text-[0.8rem] font-medium text-accent shadow-[0_0_14px_rgb(112_215_250/20%)]"
+              className="rounded-full border border-accent/60 bg-accent/15 px-3 py-1 font-mono text-[0.8rem] font-medium text-accent"
             >
               {technology}
             </li>

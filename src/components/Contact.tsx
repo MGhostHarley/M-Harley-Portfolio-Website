@@ -9,7 +9,7 @@ export default function Contact() {
       aria-labelledby="contact-heading"
       className={sectionBandStyles}
     >
-      <div className="page grid items-center gap-10 rounded-3xl border border-line bg-[linear-gradient(135deg,rgb(193_118_223/14%),rgb(112_215_250/6%)),var(--color-surface)] p-7 md:grid-cols-[1.1fr_0.9fr] md:p-14">
+      <div className="page grid items-center gap-10 rounded-3xl border border-line bg-surface p-7 md:grid-cols-[1.1fr_0.9fr] md:p-14">
         <div>
           <p className="eyebrow text-sm md:text-base">Contact</p>
           <h2 id="contact-heading" className={`mt-4 mb-4 ${headingStyles}`}>

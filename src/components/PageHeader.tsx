@@ -22,7 +22,7 @@ export default function PageHeader({
           alt=""
           width="800"
           height="1000"
-          className="size-24 shrink-0 rounded-full border-2 border-violet object-cover object-top md:size-28"
+          className="size-24 shrink-0 rounded-full border border-accent/35 object-cover object-top md:size-28"
         />
         <div>
           <p className="eyebrow text-sm md:text-base">{eyebrow}</p>

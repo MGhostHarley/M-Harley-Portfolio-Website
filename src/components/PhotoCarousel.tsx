@@ -26,7 +26,7 @@ export default function PhotoCarousel() {
 
   return (
     <figure className="relative w-full max-w-65 justify-self-center md:max-w-none">
-      <div className="relative aspect-4/5 overflow-hidden rounded-[20px] border border-accent/35 shadow-[0_30px_80px_-30px_rgb(193_118_223/45%)]">
+      <div className="relative aspect-4/5 overflow-hidden rounded-[20px] border border-accent/35">
         {photos.map(
           ({ src, alt }, index) =>
             mounted.has(index) && (
