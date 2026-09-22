@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from 'react'
 import {
+  contactFields,
   maxLengths,
   validateContact,
   type ContactErrors,
@@ -40,6 +41,35 @@ const inputStyles =
 
 const emptyForm: ContactValues = { name: '', email: '', message: '' }
 
+// The draft survives a reload or a phone discarding the tab. Storage can be
+// unavailable (private windows, blocked site data), so every access is guarded.
+const DRAFT_KEY = 'contact-draft'
+
+function loadDraft(): ContactValues {
+  try {
+    const saved: unknown = JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? '{}')
+    const draft = { ...emptyForm }
+    if (saved && typeof saved === 'object')
+      for (const field of contactFields) {
+        const value = (saved as Record<string, unknown>)[field]
+        if (typeof value === 'string') draft[field] = value
+      }
+    return draft
+  } catch {
+    return emptyForm
+  }
+}
+
+function saveDraft(values: ContactValues) {
+  try {
+    if (Object.values(values).some((value) => value.trim()))
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(values))
+    else sessionStorage.removeItem(DRAFT_KEY)
+  } catch {
+    // Storage unavailable: the draft just won't outlive the page.
+  }
+}
+
 // Hidden spam trap: people never see it, bots fill it in. The name avoids
 // words like "website" or "url" so browser autofill won't fill it either.
 const HONEYPOT_NAME = 'nickname_confirm'
@@ -68,7 +98,7 @@ const fields: {
 ]
 
 export default function ContactForm({ className }: { className?: string }) {
-  const [values, setValues] = useState(emptyForm)
+  const [values, setValues] = useState(loadDraft)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [status, setStatus] = useState<Status>({ type: 'idle', message: '' })
   const idPrefix = useId()
@@ -83,6 +113,8 @@ export default function ContactForm({ className }: { className?: string }) {
 
   // Closing the dialog keeps the draft but drops stale errors, so reopening
   // starts clean. (A timed-out send stays blocked on purpose.)
+  useEffect(() => saveDraft(values), [values])
+
   useEffect(() => {
     const dialog = formRef.current?.closest('dialog')
     if (!dialog) return
@@ -251,7 +283,7 @@ export default function ContactForm({ className }: { className?: string }) {
           href={linkedIn}
           className={`inline-flex min-h-11 items-center ${textLinkStyles}`}
         >
-          Message me on LinkedIn ↗
+          Message me on LinkedIn <span aria-hidden="true">↗</span>
         </ExternalLink>
       )}
     </form>

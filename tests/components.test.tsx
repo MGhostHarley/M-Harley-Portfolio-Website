@@ -95,6 +95,8 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup()
+  // The contact form keeps its draft in sessionStorage; start each test clean.
+  sessionStorage.clear()
   vi.clearAllMocks()
   vi.restoreAllMocks()
   vi.unstubAllGlobals()
@@ -166,6 +168,25 @@ describe('ContactForm', () => {
       ).toBe(blocked)
     },
   )
+
+  it('keeps a draft across a reload and clears it after sending', async () => {
+    vi.mocked(sendContactEmail).mockResolvedValue(undefined)
+    const user = userEvent.setup()
+    const { unmount } = render(<ContactForm />)
+    await user.type(screen.getByLabelText('Your message'), 'Half-written')
+    unmount()
+
+    render(<ContactForm />)
+    expect(
+      screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
+    ).toBe('Half-written')
+
+    await user.type(screen.getByLabelText('Your name'), 'Ada')
+    await user.type(screen.getByLabelText('Your email'), 'ada@example.com')
+    await user.click(screen.getByRole('button', { name: 'Send message' }))
+    await waitFor(() => expect(sendContactEmail).toHaveBeenCalledOnce())
+    expect(sessionStorage.getItem('contact-draft')).toBeNull()
+  })
 
   it('silently accepts honeypot submissions without sending email', async () => {
     const user = userEvent.setup()

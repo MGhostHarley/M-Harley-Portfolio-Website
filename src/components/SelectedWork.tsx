@@ -18,7 +18,7 @@ export default function SelectedWork() {
           className={`inline-flex min-h-11 items-center ${textLinkStyles}`}
           href="/case-studies/"
         >
-          Read all case studies →
+          Read all case studies <span aria-hidden="true">→</span>
         </a>
       }
     >
@@ -35,8 +35,10 @@ export default function SelectedWork() {
                 lead ? 'md:col-span-2 lg:col-span-1 lg:row-span-2' : ''
               }
             >
+              {/* Named by its result and title, not the whole card's text. */}
               <a
                 href={`/case-studies/#${id}`}
+                aria-labelledby={`${id}-card-result ${id}-card-title`}
                 className={`${panelStyles} group flex h-full flex-col p-6 transition-colors hover:border-accent/50 md:p-7 ${lead ? 'lg:p-10' : ''}`}
               >
                 <div className="flex items-center justify-between gap-3">
@@ -52,12 +54,14 @@ export default function SelectedWork() {
                 )}
                 <p
                   className={`mt-6 leading-none font-semibold tracking-tight text-gold ${lead ? 'text-[2.4rem] md:text-5xl' : 'text-[2.4rem]'}`}
+                  id={`${id}-card-result`}
                 >
                   {result.value}
                 </p>
                 <p className="mt-2 text-sm text-muted">{result.label}</p>
                 <h3
                   className={`mt-6 mb-6 border-t border-line pt-5 leading-snug font-semibold ${lead ? 'text-xl md:text-2xl' : 'text-xl'}`}
+                  id={`${id}-card-title`}
                 >
                   {title}
                 </h3>
@@ -86,7 +90,7 @@ export default function SelectedWork() {
                   </>
                 )}
                 <span className="mt-auto text-sm text-accent group-hover:underline">
-                  Read the case study →
+                  Read the case study <span aria-hidden="true">→</span>
                 </span>
               </a>
             </li>
