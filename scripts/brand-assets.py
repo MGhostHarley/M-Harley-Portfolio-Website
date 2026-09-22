@@ -67,7 +67,7 @@ LETTERS = 0.54  # font size
 LIFT = 0.07  # letters sit above center to make room for the stroke
 STROKE_W, STROKE_H, STROKE_GAP = 0.62, 0.075, 0.07
 RADIUS = 0.22
-EDGE = (48, 42, 40)  # a faint border so the tile holds its shape on dark tab bars
+EDGE = (40, 40, 48)  # a faint border so the tile holds its shape on dark tab bars
 
 
 def favicon_png(size, touch=False):
