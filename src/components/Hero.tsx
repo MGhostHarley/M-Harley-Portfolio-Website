@@ -11,7 +11,7 @@ export default function Hero() {
   return (
     <header
       id="home"
-      className="page grid flex-1 content-center items-center gap-10 py-12 md:grid-cols-[1.35fr_0.65fr] md:gap-16 md:py-16"
+      className="page grid flex-1 content-center items-center gap-10 pt-10 pb-14 md:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] md:gap-16 md:pt-12 md:pb-16"
     >
       <div>
         <h1 className="mb-4 font-serif text-[length:clamp(2.8rem,6vw,4.6rem)] leading-[1.08] font-bold">
@@ -31,7 +31,7 @@ export default function Hero() {
           </mark>
           .
         </p>
-        <p className="mb-8 max-w-[38em] text-lg leading-relaxed text-body">
+        <p className="mb-8 max-w-[62ch] text-lg leading-relaxed text-body">
           {profile.introduction}
         </p>
         <div className="flex flex-wrap gap-3.5">

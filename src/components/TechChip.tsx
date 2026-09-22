@@ -48,7 +48,7 @@ export default function TechChip({
   return (
     <span
       style={{ '--brand': color } as CSSProperties}
-      className="inline-flex items-center gap-1.5 rounded-full border border-(--brand)/45 bg-(--brand)/10 px-2.5 py-1 font-mono text-xs font-medium whitespace-nowrap text-(--brand)"
+      className="inline-flex items-center gap-1.5 rounded-full border border-(--brand)/45 bg-(--brand)/10 px-2.5 py-1 text-[0.8rem] font-medium whitespace-nowrap text-(--brand)"
     >
       {icon && (
         <svg

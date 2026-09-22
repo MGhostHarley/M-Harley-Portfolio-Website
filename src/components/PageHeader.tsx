@@ -10,7 +10,7 @@ interface PageHeaderProps {
 /** Opening band for pages other than the home page. */
 export default function PageHeader({ title, children }: PageHeaderProps) {
   return (
-    <header className="border-b border-line bg-[linear-gradient(to_bottom,rgb(17_14_42/55%),transparent)]">
+    <header className="border-b border-line bg-[linear-gradient(to_bottom,var(--color-band),transparent)]">
       <div className="page flex flex-col gap-6 py-12 md:flex-row md:items-center md:gap-7 md:py-24">
         <img
           src={portrait}
@@ -21,7 +21,7 @@ export default function PageHeader({ title, children }: PageHeaderProps) {
         />
         <div>
           <h1 className={`mb-4 ${headingStyles}`}>{title}</h1>
-          <div className="max-w-[44em] text-lg text-muted">{children}</div>
+          <div className="max-w-[60ch] text-lg text-muted">{children}</div>
         </div>
       </div>
     </header>

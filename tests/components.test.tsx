@@ -293,6 +293,23 @@ describe('PhotoCarousel', () => {
     vi.useRealTimers()
   })
 
+  it('holds the photo while focus is inside it', () => {
+    vi.useFakeTimers()
+    render(<PhotoCarousel />)
+    const dot = screen.getByRole('button', {
+      name: `Show photo 1 of ${photos.length}`,
+    })
+
+    act(() => dot.focus())
+    act(() => vi.advanceTimersByTime(30_000))
+    expect(visibleAlt()).toBe(photos[0].alt)
+
+    act(() => dot.blur())
+    act(() => vi.advanceTimersByTime(15_000))
+    expect(visibleAlt()).toBe(photos[1].alt)
+    vi.useRealTimers()
+  })
+
   it('stays on one photo when animation is paused', () => {
     vi.useFakeTimers()
     render(

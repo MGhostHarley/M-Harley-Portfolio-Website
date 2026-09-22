@@ -21,7 +21,7 @@ export default function AiInProduction() {
             <dd className="mt-1.5 text-sm leading-normal text-body">
               {detail}
             </dd>
-            <dd className="mt-2 font-mono text-xs text-accent">{company}</dd>
+            <dd className="mt-2 text-sm text-muted">{company}</dd>
           </div>
         ))}
       </dl>

@@ -24,7 +24,7 @@ const statusColors: Record<Status['type'], string> = {
 }
 
 const inputStyles =
-  'block w-full rounded-lg border border-faint/60 bg-night/60 px-4 py-3 text-snow focus:border-accent aria-[invalid=true]:border-error'
+  'block min-h-11 w-full rounded-lg border border-faint/60 bg-night/60 px-4 py-2 text-snow focus:border-accent aria-[invalid=true]:border-error'
 
 const emptyForm: ContactValues = { name: '', email: '', message: '' }
 
@@ -149,7 +149,7 @@ export default function ContactForm({ className }: { className?: string }) {
           'aria-describedby': error ? errorId : undefined,
         }
         return (
-          <div className="mb-6" key={name}>
+          <div className="mb-2" key={name}>
             <label htmlFor={inputProps.id} className="mb-2.5 block">
               {label}
             </label>
@@ -167,11 +167,10 @@ export default function ContactForm({ className }: { className?: string }) {
                 className={inputStyles}
               />
             )}
-            {error && (
-              <p id={errorId} className="mt-2 text-sm text-error">
-                {error}
-              </p>
-            )}
+            {/* Always takes its line, so an error appearing doesn't shift the form. */}
+            <p id={errorId} className="mt-1.5 min-h-6 text-sm text-error">
+              {error}
+            </p>
           </div>
         )
       })}

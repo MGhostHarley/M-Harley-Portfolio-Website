@@ -22,7 +22,7 @@ export type SectionSpacing = keyof typeof bandSpacing
  * nav link lands with no sliver of the previous section showing.
  */
 export function sectionBandStyles(spacing: SectionSpacing = 'default') {
-  return `scroll-mt-17 border-t border-line bg-[linear-gradient(to_bottom,rgb(17_14_42/55%),transparent_240px)] ${bandSpacing[spacing]}`
+  return `scroll-mt-17 border-t border-line bg-[linear-gradient(to_bottom,var(--color-band),transparent_240px)] ${bandSpacing[spacing]}`
 }
 
 /** Section heading type, shared by pages that build their own header. */

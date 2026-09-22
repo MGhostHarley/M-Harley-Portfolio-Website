@@ -19,7 +19,7 @@ export default function CaseStudiesPage() {
         them, and what changed as a result.
       </PageHeader>
 
-      <div className="page grid grid-cols-1 gap-14 pt-14 lg:grid-cols-[220px_1fr] lg:pt-16">
+      <div className="page grid grid-cols-1 gap-14 pt-14 lg:grid-cols-[220px_minmax(0,1fr)] lg:pt-16">
         <nav aria-label="Case studies" className="max-lg:hidden">
           <div className="sticky top-24">
             <p className="text-sm font-semibold text-muted">Case studies</p>
@@ -29,7 +29,7 @@ export default function CaseStudiesPage() {
                   <a
                     href={`#${id}`}
                     aria-current={active === id ? 'location' : undefined}
-                    className="-ml-px flex gap-3 border-l-2 border-transparent py-2.5 pl-4.5 text-[0.92rem] leading-snug text-muted hover:text-snow aria-[current=location]:border-accent aria-[current=location]:text-snow"
+                    className="-ml-px flex gap-3 border-l border-transparent py-2.5 pl-4.5 text-[0.92rem] leading-snug text-muted hover:text-snow aria-[current=location]:border-accent aria-[current=location]:text-snow"
                   >
                     <img
                       src={companyLogos[company]}

@@ -14,14 +14,14 @@ export default function FaqPage() {
         Quick answers about me, my work, and how to get in touch.
       </PageHeader>
 
-      <div className="page grid grid-cols-1 gap-14 py-14 lg:grid-cols-[220px_1fr] lg:py-20">
+      <div className="page grid grid-cols-1 gap-14 py-14 lg:grid-cols-[220px_minmax(0,1fr)] lg:py-20">
         <nav aria-label="FAQ topics" className="max-lg:hidden">
           <ol className="sticky top-24 grid gap-1 border-l border-line">
             {faqGroups.map(({ title }, index) => (
               <li key={title}>
                 <a
                   href={`#${groupId(index)}`}
-                  className="-ml-px block border-l-2 border-transparent py-2.5 pl-4.5 text-muted hover:border-accent hover:text-snow"
+                  className="-ml-px block border-l border-transparent py-2.5 pl-4.5 text-muted hover:border-accent hover:text-snow"
                 >
                   {title}
                 </a>
@@ -58,7 +58,7 @@ export default function FaqPage() {
                         <PlusIcon />
                       </span>
                     </summary>
-                    <p className="px-6 pb-6 text-body">{answer}</p>
+                    <p className="max-w-[68ch] px-6 pb-6 text-body">{answer}</p>
                   </details>
                 ))}
               </div>

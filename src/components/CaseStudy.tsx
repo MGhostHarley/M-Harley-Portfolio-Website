@@ -78,7 +78,7 @@ export default function CaseStudy(study: CaseStudyData) {
       aria-labelledby={`${id}-title`}
       className="scroll-mt-24 border-b border-line pb-18 not-last:mb-18 last:border-0"
     >
-      <header className="grid gap-x-10 gap-y-5 lg:grid-cols-[1fr_auto] lg:items-end">
+      <header className="grid gap-x-10 gap-y-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div>
           <h2
             id={`${id}-title`}
@@ -95,7 +95,7 @@ export default function CaseStudy(study: CaseStudyData) {
               className="size-9 rounded-lg"
             />
             <span>
-              <span className="block font-semibold text-accent">{company}</span>
+              <span className="block font-semibold text-snow">{company}</span>
               <span className="text-sm">
                 {[sector, detail, period].filter(Boolean).join(' · ')}
               </span>
@@ -125,7 +125,7 @@ export default function CaseStudy(study: CaseStudyData) {
         <h3 className="text-lg font-semibold text-snow">
           <span className="text-gold">Key decision:</span> {keyDecision.title}
         </h3>
-        <p className="mt-1.5 text-body">{keyDecision.detail}</p>
+        <p className="mt-1.5 max-w-[68ch] text-body">{keyDecision.detail}</p>
       </div>
 
       <ul className="mt-6 flex flex-wrap gap-2" aria-label="Technologies">

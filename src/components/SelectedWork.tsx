@@ -21,7 +21,7 @@ export default function SelectedWork() {
     >
       {/* The first case study leads: full width on tablets, a tall left
           column beside the other two on wide screens. */}
-      <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr]">
+      <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         {caseStudies.map(({ id, company, title, result, problem }, index) => {
           const lead = index === 0
           return (

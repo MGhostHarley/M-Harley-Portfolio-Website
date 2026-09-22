@@ -25,6 +25,8 @@
   --color-faint: #85809b;
   --color-line: rgb(194 189 214 / 14%);
   --color-surface: rgb(17 14 42 / 72%);
+  --color-band: rgb(17 14 42 / 55%); /* Fade at the top of each section band. */
+  --color-strip: rgb(10 8 30 / 60%); /* The Now strip under the hero. */
   --color-accent: #70d7fa;
   --color-accent-hover: #9ae4fc;
   --color-coral: #ff9478; /* Marks AI work only. */
@@ -51,7 +53,7 @@
   }
 }
 
-/* Uppercase monospace label used above headings. Size it with text-*. */
+/* Uppercase label; only the hidden Projects section still uses one. */
 @utility eyebrow {
   font-family: var(--font-mono);
   font-weight: 500;
@@ -121,7 +123,7 @@
     line-height: 1.65;
   }
   ::selection {
-    background: rgb(112 215 250 / 30%);
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
     color: var(--color-snow);
   }
   h1,
@@ -136,7 +138,10 @@
   /* Long words (e.g. "Medicare-compliant") break instead of overflowing at large text sizes. */
   h1,
   h2,
-  h3,
+  h3 {
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
   p,
   dt,
   dd,
@@ -150,8 +155,17 @@
   button:not(:disabled) {
     cursor: pointer;
   }
-  button:disabled {
+  :is(button, input, textarea):disabled {
     opacity: 0.65;
+    cursor: not-allowed;
+  }
+  /* A slight press, so every control answers the click. */
+  :is(a, button, summary):not(:disabled):active {
+    transform: translateY(1px);
+  }
+  /* The ring's color never changes, so color transitions can't fade it in. */
+  :is(a, button, summary, input, textarea) {
+    outline-color: var(--color-accent);
   }
   :focus-visible {
     outline: 3px solid var(--color-accent);
