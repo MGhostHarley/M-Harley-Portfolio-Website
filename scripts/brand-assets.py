@@ -172,19 +172,13 @@ def social_preview():
     # The role reads as a sentence under the name, as in the site's hero.
     draw.text((left, 222 * S), 'Senior Full-Stack Software Engineer in San Francisco', font=inter(25 * S, 400), fill=MUTED)
 
-    # "Most people call me Em" with the gradient mark
+    # "Most people call me Em", with Em in bold as on the site
     body = inter(30 * S, 450)
     line_y = 286 * S
     text = 'Most people call me '
     draw.text((left, line_y), text, font=body, fill=SNOW)
     mx = left + draw.textlength(text, font=body)
-    em_font = inter(30 * S, 650)
-    eb = [round(v) for v in draw.textbbox((mx + 10 * S, line_y), 'Em', font=em_font)]
-    pad = 9 * S
-    mark = gradient(eb[2] - eb[0] + 2 * pad, eb[3] - eb[1] + 2 * pad)
-    img.paste(mark, (eb[0] - pad, eb[1] - pad), rounded_mask(mark.size, 7 * S))
-    draw = ImageDraw.Draw(img, 'RGBA')
-    draw.text((mx + 10 * S, line_y), 'Em', font=em_font, fill=INK)
+    draw.text((mx, line_y), 'Em.', font=inter(30 * S, 650), fill=SNOW)
 
     # Current role
     role_y = 350 * S

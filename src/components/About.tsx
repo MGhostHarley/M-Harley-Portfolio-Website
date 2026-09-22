@@ -1,3 +1,4 @@
+import { useId, useState } from 'react'
 import Section from './Section'
 import TechChip from './TechChip'
 import { profile } from '../data/profile'
@@ -21,19 +22,28 @@ function SkillChips({ skills }: { skills: Skill[] }) {
 }
 
 function SkillList({ skills }: { skills: Skill[] }) {
+  const [expanded, setExpanded] = useState(false)
+  const listId = useId()
   // Hiding a single skill behind a toggle costs more than showing it.
   if (skills.length <= VISIBLE_SKILLS + 1) return <SkillChips skills={skills} />
-  const more = skills.slice(VISIBLE_SKILLS)
+  const hidden = skills.length - VISIBLE_SKILLS
   return (
     <>
-      <SkillChips skills={skills.slice(0, VISIBLE_SKILLS)} />
-      <details className="group mt-1">
-        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center text-sm text-accent hover:text-snow [&::-webkit-details-marker]:hidden">
-          <span className="group-open:hidden">+{more.length} more</span>
-          <span className="hidden group-open:inline">Show fewer</span>
-        </summary>
-        <SkillChips skills={more} />
-      </details>
+      <div id={listId}>
+        <SkillChips
+          skills={expanded ? skills : skills.slice(0, VISIBLE_SKILLS)}
+        />
+      </div>
+      {/* After the chips, so it stays at the end whether open or closed. */}
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={listId}
+        onClick={() => setExpanded(!expanded)}
+        className="mt-1 inline-flex min-h-11 items-center text-sm text-accent hover:text-snow"
+      >
+        {expanded ? 'Show fewer' : `+${hidden} more`}
+      </button>
     </>
   )
 }
@@ -42,7 +52,7 @@ export default function About() {
   return (
     <Section id="about" title={`Hi, I'm ${profile.preferredName}.`}>
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
-        <div className="text-lg text-body">
+        <div className="max-w-[68ch] text-lg text-body">
           <p className="mb-5">{profile.summary}</p>
           <p className="mb-8">{profile.approach}</p>
           <h3 className="mb-1.5 font-semibold text-snow">Education</h3>

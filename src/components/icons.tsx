@@ -49,6 +49,22 @@ export function ArrowRightIcon(props: IconProps) {
   )
 }
 
+export function PauseIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M9 5v14M15 5v14" />
+    </Icon>
+  )
+}
+
+export function PlayIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M8 5l11 7-11 7z" />
+    </Icon>
+  )
+}
+
 export function PlusIcon(props: IconProps) {
   return (
     <Icon {...props}>

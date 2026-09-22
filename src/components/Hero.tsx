@@ -1,7 +1,9 @@
 import { profile } from '../data/profile'
 import PhotoCarousel from './PhotoCarousel'
 import SocialLinks from './SocialLinks'
-import { buttonStyles, highlightStyles } from './styles'
+import ContactDialog from './ContactDialog'
+import { experiences } from '../data/experience'
+import { buttonStyles } from './styles'
 
 export default function Hero() {
   // Text on either side of the highlight keeps its spaces, e.g. "Michael " + "".
@@ -22,14 +24,12 @@ export default function Hero() {
           {afterHighlight}
         </h1>
         <p className="mb-6 text-lg text-muted">
-          {profile.title} in {profile.location.split(',')[0]}
+          {profile.title} at {experiences[0].company},{' '}
+          {profile.location.split(',')[0]}
         </p>
         <p className="mb-4 text-xl leading-relaxed text-snow">
           Most people call me{' '}
-          <mark className={`${highlightStyles} font-semibold`}>
-            {profile.preferredName}
-          </mark>
-          .
+          <strong className="font-semibold">{profile.preferredName}</strong>.
         </p>
         <p className="mb-8 max-w-[62ch] text-lg leading-relaxed text-body">
           {profile.introduction}
@@ -38,11 +38,9 @@ export default function Hero() {
           <a className={buttonStyles.primary} href="/case-studies/">
             Read case studies <span aria-hidden="true">→</span>
           </a>
-          <a className={buttonStyles.secondary} href="#contact">
-            Get in touch
-          </a>
+          <ContactDialog label="Get in touch" variant="secondary" />
         </div>
-        <SocialLinks className="mt-7" />
+        <SocialLinks className="mt-7 max-md:hidden" />
       </div>
       <PhotoCarousel />
     </header>

@@ -40,7 +40,7 @@ export default function PhotoCarousel() {
 
   return (
     <figure
-      className="relative w-full max-w-65 justify-self-center md:max-w-none"
+      className="relative w-full max-w-52 justify-self-center md:max-w-none"
       onPointerEnter={onPointer(true)}
       onPointerLeave={onPointer(false)}
       onFocus={() => setHeld(true)}

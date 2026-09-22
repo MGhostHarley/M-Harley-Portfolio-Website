@@ -1,4 +1,11 @@
-import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import {
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FocusEvent,
+  type FormEvent,
+} from 'react'
 import {
   maxLengths,
   validateContact,
@@ -59,6 +66,8 @@ export default function ContactForm({ className }: { className?: string }) {
   const [values, setValues] = useState(emptyForm)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [status, setStatus] = useState<Status>({ type: 'idle', message: '' })
+  // Unique per form, since a page can hold more than one contact dialog.
+  const idPrefix = useId()
   // A ref, not state, so a rapid double submit can't slip past before re-render.
   const inFlight = useRef(false)
   const sending = status.type === 'sending'
@@ -70,6 +79,17 @@ export default function ContactForm({ className }: { className?: string }) {
     const { name, value } = event.target
     setValues((previous) => ({ ...previous, [name]: value }))
     setErrors((previous) => ({ ...previous, [name]: undefined }))
+  }
+
+  // Check a field once it's filled in and left, so a mistyped email shows
+  // before Send. Empty fields wait for submit rather than nagging early.
+  const handleBlur = (
+    event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const name = event.target.name as ContactField
+    if (!values[name].trim()) return
+    const fieldError = validateContact(values).errors[name]
+    setErrors((previous) => ({ ...previous, [name]: fieldError }))
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -125,9 +145,9 @@ export default function ContactForm({ className }: { className?: string }) {
         className="absolute -left-[10000px] size-px overflow-hidden"
         aria-hidden="true"
       >
-        <label htmlFor="contact-honeypot">Leave this field empty</label>
+        <label htmlFor={`${idPrefix}-honeypot`}>Leave this field empty</label>
         <input
-          id="contact-honeypot"
+          id={`${idPrefix}-honeypot`}
           name={HONEYPOT_NAME}
           type="text"
           tabIndex={-1}
@@ -136,12 +156,13 @@ export default function ContactForm({ className }: { className?: string }) {
       </div>
       {fields.map(({ name, label, type, autoComplete }) => {
         const error = errors[name]
-        const errorId = `${name}-error`
+        const errorId = `${idPrefix}-${name}-error`
         const inputProps = {
-          id: `contact-${name}`,
+          id: `${idPrefix}-${name}`,
           name,
           value: values[name],
           onChange: handleChange,
+          onBlur: handleBlur,
           required: true,
           maxLength: maxLengths[name],
           disabled: sending,
@@ -174,6 +195,10 @@ export default function ContactForm({ className }: { className?: string }) {
           </div>
         )
       })}
+      <p className="mb-4 text-sm text-faint">
+        Messages are delivered through EmailJS. Your name, email, and message
+        are only used to reply to you.
+      </p>
       <button type="submit" className={buttonStyles.primary} disabled={blocked}>
         {sending ? 'Sending…' : 'Send message'}
       </button>

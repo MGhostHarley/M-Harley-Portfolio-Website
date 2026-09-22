@@ -34,7 +34,3 @@ export const textLinkStyles =
 
 /** Translucent bordered panel used for cards. */
 export const panelStyles = 'rounded-2xl border border-line bg-surface'
-
-/** Gradient highlighter, as on "Em" in the hero and the nav brand. */
-export const highlightStyles =
-  'rounded-md bg-linear-to-r/srgb from-accent via-pink to-gold px-1.5 text-ink'

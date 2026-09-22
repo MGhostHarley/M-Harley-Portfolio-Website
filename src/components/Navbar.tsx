@@ -54,7 +54,7 @@ export default function Navbar({ currentPage }: NavbarProps) {
     >
       {/* A floating pill over the star field. It wraps to a second row
           instead of overflowing when text is enlarged. */}
-      <div className="relative page flex min-h-14 flex-wrap items-center gap-x-1 gap-y-1 rounded-[28px] border border-line bg-night/90 py-1 pr-1.5 pl-4 backdrop-blur-md sm:gap-x-4 sm:pl-5 lg:gap-x-6">
+      <div className="relative page flex min-h-14 flex-wrap items-center gap-x-1 gap-y-1 rounded-[28px] border border-line bg-night/95 py-1 pr-1.5 pl-4 backdrop-blur-md sm:gap-x-4 sm:pl-5 lg:gap-x-6">
         <a
           href="/"
           className="inline-flex min-h-11 shrink-0 items-center font-serif text-xl font-bold"

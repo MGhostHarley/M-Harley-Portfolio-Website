@@ -25,7 +25,7 @@ export default function Experience() {
           ({ id, company, logo, title, date, summary }, index) => (
             <li
               key={id}
-              className="grid gap-2 border-b border-line py-7 md:grid-cols-[230px_minmax(0,1fr)_minmax(0,1.3fr)] md:items-start md:gap-8"
+              className="grid gap-2 border-b border-line py-7 md:grid-cols-[17rem_minmax(0,1fr)_minmax(0,1.3fr)] md:items-start md:gap-8"
             >
               <p
                 className={`font-mono text-[0.95rem] md:pt-0.5 ${index === 0 ? 'text-live' : 'text-muted'}`}

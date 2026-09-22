@@ -31,11 +31,12 @@ export function validateContact(values: Partial<ContactForm>): {
     errors.name = 'Please keep your name under 100 characters.'
 
   if (!data.email) errors.email = 'Please enter your email address.'
-  else if (
-    data.email.length > maxLengths.email ||
-    !EMAIL_PATTERN.test(data.email)
-  )
-    errors.email = 'Please enter a valid email address.'
+  else if (data.email.length > maxLengths.email)
+    errors.email = 'Please use an email address under 254 characters.'
+  else if (!data.email.includes('@'))
+    errors.email = 'Add the @ and domain, like name@company.com.'
+  else if (!EMAIL_PATTERN.test(data.email))
+    errors.email = 'Check the part after @, like name@company.com.'
 
   if (!data.message) errors.message = 'Please enter a message.'
   else if (data.message.length > maxLengths.message)

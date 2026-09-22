@@ -18,9 +18,7 @@ export default function AiInProduction() {
         {aiHighlights.map(({ title, detail, company }) => (
           <div key={title} className="flex flex-col">
             <dt className="text-xl font-semibold text-snow">{title}</dt>
-            <dd className="mt-1.5 text-sm leading-normal text-body">
-              {detail}
-            </dd>
+            <dd className="mt-1.5 leading-relaxed text-body">{detail}</dd>
             <dd className="mt-2 text-sm text-muted">{company}</dd>
           </div>
         ))}

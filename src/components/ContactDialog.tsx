@@ -1,34 +1,50 @@
-import { useRef } from 'react'
+import { useId, useRef, type ReactNode } from 'react'
 import ContactForm from './ContactForm'
 import { buttonStyles } from './styles'
 import { CloseIcon } from './icons'
 
+interface ContactDialogProps {
+  /** Text on the button that opens the dialog. */
+  label?: ReactNode
+  variant?: keyof typeof buttonStyles
+}
+
 /** A button that opens the contact form in a modal dialog. */
-export default function ContactDialog() {
+export default function ContactDialog({
+  label = (
+    <>
+      Send me a message <span aria-hidden="true">→</span>
+    </>
+  ),
+  variant = 'primary',
+}: ContactDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+  const open = () => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    dialog.showModal()
+    // Start in the first field rather than on the Close button.
+    dialog
+      .querySelector<HTMLInputElement>('input[autocomplete="name"]')
+      ?.focus()
+  }
   const close = () => dialogRef.current?.close()
   return (
     <>
-      <button
-        type="button"
-        className={buttonStyles.primary}
-        onClick={() => dialogRef.current?.showModal()}
-      >
-        Send me a message <span aria-hidden="true">→</span>
+      <button type="button" className={buttonStyles[variant]} onClick={open}>
+        {label}
       </button>
       {/* showModal() traps focus, closes on Escape, and returns focus to the button. */}
       <dialog
         ref={dialogRef}
-        aria-labelledby="contact-dialog-title"
+        aria-labelledby={titleId}
         className="m-auto w-[min(100%-2rem,560px)] rounded-2xl border border-line bg-dialog p-0 text-snow backdrop:bg-night/80 backdrop:backdrop-blur-sm"
       >
         <div className="p-6 md:p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div>
-              <h2
-                id="contact-dialog-title"
-                className="text-2xl font-bold tracking-tight"
-              >
+              <h2 id={titleId} className="text-2xl font-bold tracking-tight">
                 Send me a message
               </h2>
               <p className="mt-1 text-sm text-muted">
@@ -45,10 +61,6 @@ export default function ContactDialog() {
             </button>
           </div>
           <ContactForm />
-          <p className="mt-2 text-xs text-faint">
-            Messages are delivered through EmailJS. Your name, email, and
-            message are only used to reply to you.
-          </p>
         </div>
       </dialog>
     </>

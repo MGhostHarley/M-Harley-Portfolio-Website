@@ -1,5 +1,6 @@
 import Section from './Section'
 import CompanyBadge from './CompanyBadge'
+import TechChip from './TechChip'
 import { caseStudies } from '../data/caseStudies'
 import { scaleHighlights } from '../data/impact'
 import { panelStyles, textLinkStyles } from './styles'
@@ -22,7 +23,8 @@ export default function SelectedWork() {
       {/* The first case study leads: full width on tablets, a tall left
           column beside the other two on wide screens. */}
       <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        {caseStudies.map(({ id, company, title, result, problem }, index) => {
+        {caseStudies.map((study, index) => {
+          const { id, company, detail, title, result, problem } = study
           const lead = index === 0
           return (
             <li
@@ -36,6 +38,9 @@ export default function SelectedWork() {
                 className={`${panelStyles} group flex h-full flex-col p-6 transition-colors hover:border-accent/50 md:p-7 ${lead ? 'lg:p-10' : ''}`}
               >
                 <CompanyBadge company={company} />
+                {lead && detail && (
+                  <p className="mt-1.5 text-sm text-muted">{detail}</p>
+                )}
                 <p
                   className={`mt-6 leading-none font-semibold tracking-tight text-gold ${lead ? 'text-[2.4rem] md:text-5xl' : 'text-[2.4rem]'}`}
                 >
@@ -48,7 +53,28 @@ export default function SelectedWork() {
                   {title}
                 </h3>
                 {lead && (
-                  <p className="-mt-3 mb-6 max-w-[46ch] text-body">{problem}</p>
+                  <>
+                    <p className="-mt-3 mb-6 max-w-[46ch] text-body">
+                      {problem}
+                    </p>
+                    {/* The wide lead card has room for more of the story; phones get the short version. */}
+                    <p className="mb-6 max-w-[46ch] text-body max-md:hidden">
+                      <span className="font-semibold text-gold">
+                        Key decision:
+                      </span>{' '}
+                      {study.keyDecision.title}
+                    </p>
+                    <ul
+                      className="mb-8 flex flex-wrap gap-1.5 max-md:hidden"
+                      aria-label="Technologies"
+                    >
+                      {study.stack.map((technology) => (
+                        <li key={technology}>
+                          <TechChip name={technology} tone="neutral" />
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 )}
                 <span className="mt-auto text-sm text-accent group-hover:underline">
                   Read the case study →
