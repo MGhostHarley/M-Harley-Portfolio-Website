@@ -1,13 +1,13 @@
 import ContactDialog from './ContactDialog'
 import SocialLinks from './SocialLinks'
-import { headingStyles, sectionBandStyles } from './Section'
+import { headingStyles, sectionBandStyles } from './styles'
 
 export default function Contact() {
   return (
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className={sectionBandStyles}
+      className={sectionBandStyles('roomy')}
     >
       <div className="page grid items-center gap-10 rounded-3xl border border-line bg-surface p-7 md:grid-cols-[1.1fr_0.9fr] md:p-14">
         <div>

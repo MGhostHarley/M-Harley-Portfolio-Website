@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { headingStyles } from './Section'
+import { headingStyles } from './styles'
 import portrait from '../assets/photos/elephant.webp'
 
 interface PageHeaderProps {

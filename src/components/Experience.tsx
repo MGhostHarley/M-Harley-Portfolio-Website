@@ -10,6 +10,7 @@ export default function Experience() {
       id="experience"
       eyebrow="Experience"
       title="Ten years in production"
+      spacing="tight"
       aside={
         <>
           Full details in my{' '}

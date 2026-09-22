@@ -8,6 +8,27 @@ export const buttonStyles = {
   secondary: `${buttonBase} border-accent/35 text-snow hover:border-accent`,
 }
 
+const bandSpacing = {
+  tight: 'py-16 md:py-20',
+  default: 'py-20 md:py-28',
+  roomy: 'py-24 md:py-36',
+}
+
+export type SectionSpacing = keyof typeof bandSpacing
+
+/**
+ * Full-width band with a top rule and a soft glow, so every section has a
+ * clear start. scroll-mt-17 matches the floating nav's height (4.25rem), so a
+ * nav link lands with no sliver of the previous section showing.
+ */
+export function sectionBandStyles(spacing: SectionSpacing = 'default') {
+  return `scroll-mt-17 border-t border-line bg-[linear-gradient(to_bottom,rgb(17_14_42/55%),transparent_240px)] ${bandSpacing[spacing]}`
+}
+
+/** Section heading type, shared by pages that build their own header. */
+export const headingStyles =
+  'font-serif text-[length:clamp(2.4rem,4.6vw,3.6rem)] leading-[1.1] font-bold'
+
 export const textLinkStyles =
   'text-accent underline underline-offset-4 hover:text-snow'
 
