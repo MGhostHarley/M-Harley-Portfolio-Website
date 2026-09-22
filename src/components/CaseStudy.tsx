@@ -87,7 +87,7 @@ export default function CaseStudy(study: CaseStudyData) {
           <p className="eyebrow text-sm text-violet">{sector}</p>
           <h2
             id={`${id}-title`}
-            className="mt-2.5 font-serif text-[length:clamp(1.9rem,3.4vw,2.6rem)] leading-tight font-bold"
+            className="mt-2.5 text-[length:clamp(1.9rem,3.4vw,2.6rem)] leading-tight font-bold tracking-tight"
           >
             {title}
           </h2>
