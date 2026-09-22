@@ -30,6 +30,10 @@ describe('content', () => {
       expect(project.demo ?? project.source).toBeTruthy()
   })
 
+  it('every experience entry has a company logo', () => {
+    for (const entry of experiences) expect(entry.logo).toBeTruthy()
+  })
+
   it('every skill has an icon or a badge', () => {
     for (const { skills } of skillGroups)
       for (const skill of skills) expect(skill.icon ?? skill.badge).toBeTruthy()

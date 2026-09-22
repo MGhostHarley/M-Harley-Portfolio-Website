@@ -2,13 +2,18 @@ import deloitte from '../assets/logos/deloitte.webp'
 import expel from '../assets/logos/expel.webp'
 import kpmg from '../assets/logos/kpmg.webp'
 import fitness from '../assets/logos/24-hour-fitness.webp'
+import pacificFusion from '../assets/logos/pacific-fusion.webp'
+import symantec from '../assets/logos/symantec.webp'
 import type { Metric } from './types'
 
+/** 96px square logo tiles, keyed by company name. */
 export const companyLogos: Record<string, string> = {
+  'Pacific Fusion': pacificFusion,
   Deloitte: deloitte,
   Expel: expel,
   KPMG: kpmg,
   '24 Hour Fitness': fitness,
+  Symantec: symantec,
 }
 
 /** Results at scale that have no case study of their own. */

@@ -1,3 +1,4 @@
+import { companyLogos } from './impact'
 import type { Experience } from './types'
 
 // From the September 2026 resume.
@@ -5,6 +6,7 @@ export const experiences: Experience[] = [
   {
     id: 'pacific-fusion',
     company: 'Pacific Fusion',
+    logo: companyLogos['Pacific Fusion'],
     title: 'Senior Full Stack Developer',
     date: 'September 2026 – Present',
     location: 'San Leandro, CA',
@@ -20,6 +22,7 @@ export const experiences: Experience[] = [
   {
     id: 'deloitte',
     company: 'Deloitte',
+    logo: companyLogos.Deloitte,
     title: 'Full-Stack Software Engineer',
     date: 'November 2023 – July 2026',
     location: 'San Francisco, CA · Remote',
@@ -35,6 +38,7 @@ export const experiences: Experience[] = [
   {
     id: 'fitness-product',
     company: '24 Hour Fitness',
+    logo: companyLogos['24 Hour Fitness'],
     title: 'Product Manager',
     date: 'August 2023 – November 2023',
     location: 'San Francisco, CA',
@@ -47,6 +51,7 @@ export const experiences: Experience[] = [
   {
     id: 'fitness-engineering',
     company: '24 Hour Fitness',
+    logo: companyLogos['24 Hour Fitness'],
     title: 'Software Engineer – Platform',
     date: 'September 2022 – August 2023',
     location: 'San Francisco, CA',
@@ -60,6 +65,7 @@ export const experiences: Experience[] = [
   {
     id: 'expel',
     company: 'Expel, Inc.',
+    logo: companyLogos.Expel,
     title: 'Software Engineer',
     date: 'May 2021 – September 2022',
     location: 'Herndon, VA · Remote',
@@ -73,6 +79,7 @@ export const experiences: Experience[] = [
   {
     id: 'kpmg',
     company: 'KPMG',
+    logo: companyLogos.KPMG,
     title: 'Software Developer',
     date: 'February 2018 – May 2021',
     location: 'McLean, VA · Hybrid',
@@ -87,6 +94,7 @@ export const experiences: Experience[] = [
   {
     id: 'symantec',
     company: 'Symantec',
+    logo: companyLogos.Symantec,
     title: 'Software Engineer',
     date: 'June 2016 – February 2018',
     location: 'Herndon, VA',
