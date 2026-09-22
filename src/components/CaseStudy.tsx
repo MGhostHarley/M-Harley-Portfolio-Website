@@ -10,10 +10,11 @@ const nodeStyles: Record<NonNullable<DiagramNode['kind']> | 'default', string> =
     store: 'border-dashed border-accent/40 bg-accent/5',
   }
 
-const columns = [
-  { key: 'problem', label: 'Problem', border: 'border-accent' },
-  { key: 'approach', label: 'Approach', border: 'border-accent' },
-  { key: 'outcome', label: 'Outcome', border: 'border-gold' },
+/** Read top to bottom: each step follows from the one before. */
+const steps = [
+  { key: 'problem', label: 'Problem' },
+  { key: 'approach', label: 'Approach' },
+  { key: 'outcome', label: 'Outcome' },
 ] as const
 
 function Diagram({ rows }: { rows: CaseStudyData['diagram'] }) {
@@ -107,7 +108,7 @@ export default function CaseStudy(study: CaseStudyData) {
             </span>
           </p>
         </div>
-        <p className="border-l-2 border-gold pl-4 lg:mb-1 lg:min-w-44">
+        <p className="lg:mb-1 lg:min-w-44">
           <span className="block text-3xl font-bold tracking-tight text-gold">
             {result.value}
           </span>
@@ -115,12 +116,10 @@ export default function CaseStudy(study: CaseStudyData) {
         </p>
       </header>
 
-      <dl className="my-9 grid gap-6 md:grid-cols-3">
-        {columns.map(({ key, label, border }) => (
-          <div key={key} className={`border-t-2 pt-3.5 ${border}`}>
-            <dt className="mb-2.5 font-mono text-xs tracking-widest text-muted uppercase">
-              {label}
-            </dt>
+      <dl className="my-9 grid max-w-[68ch] gap-6">
+        {steps.map(({ key, label }) => (
+          <div key={key}>
+            <dt className="mb-1.5 font-semibold text-snow">{label}</dt>
             <dd className="text-body">{study[key]}</dd>
           </div>
         ))}
