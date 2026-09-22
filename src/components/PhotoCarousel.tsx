@@ -44,20 +44,37 @@ export default function PhotoCarousel() {
         )}
       </div>
       <figcaption className="mt-3 flex justify-center">
-        {photos.map(({ alt }, index) => (
-          <button
-            key={alt}
-            type="button"
-            onClick={() => setCurrent(index)}
-            aria-label={`Show photo ${index + 1} of ${photos.length}`}
-            aria-current={index === current}
-            className="grid size-11 place-items-center"
-          >
-            <span
-              className={`block h-1.5 rounded-full transition-[width,background-color] ${index === current ? 'w-5 bg-accent' : 'w-1.5 bg-faint'}`}
-            />
-          </button>
-        ))}
+        {photos.map(({ alt }, index) => {
+          const active = index === current
+          return (
+            <button
+              key={alt}
+              type="button"
+              onClick={() => setCurrent(index)}
+              aria-label={`Show photo ${index + 1} of ${photos.length}`}
+              aria-current={active}
+              className="grid size-11 place-items-center"
+            >
+              <span
+                className={`relative block h-1.5 overflow-hidden rounded-full transition-[width] ${active ? 'w-5 bg-accent/30' : 'w-1.5 bg-faint'}`}
+              >
+                {/* Fills over the interval, so it's visible that the photo
+                    changes on a timer. Restarts with each photo. */}
+                {active && (
+                  <span
+                    key={current}
+                    className="absolute inset-0 origin-left bg-accent"
+                    style={
+                      motionEnabled
+                        ? { animation: `dot-fill ${INTERVAL_MS}ms linear` }
+                        : undefined
+                    }
+                  />
+                )}
+              </span>
+            </button>
+          )
+        })}
       </figcaption>
     </figure>
   )

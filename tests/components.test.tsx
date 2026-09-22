@@ -204,7 +204,9 @@ describe('PauseButton', () => {
       <PauseButton paused={false} onToggle={onToggle} />,
     )
 
-    const button = screen.getByRole('button', { name: 'Pause animation' })
+    const button = screen.getByRole('button', {
+      name: 'Pause motion and photos',
+    })
     expect(button.getAttribute('aria-pressed')).toBe('false')
     await user.click(button)
     expect(onToggle).toHaveBeenCalledOnce()
@@ -212,7 +214,7 @@ describe('PauseButton', () => {
     rerender(<PauseButton paused onToggle={onToggle} />)
     expect(
       screen
-        .getByRole('button', { name: 'Resume animation' })
+        .getByRole('button', { name: 'Resume motion and photos' })
         .getAttribute('aria-pressed'),
     ).toBe('true')
   })

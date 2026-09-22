@@ -5,7 +5,7 @@ interface PauseButtonProps {
 
 /** Small floating control that pauses the star field and photo rotation. */
 export default function PauseButton({ paused, onToggle }: PauseButtonProps) {
-  const label = paused ? 'Resume animation' : 'Pause animation'
+  const label = paused ? 'Resume motion and photos' : 'Pause motion and photos'
   return (
     <button
       type="button"

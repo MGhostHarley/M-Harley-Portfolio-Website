@@ -92,6 +92,13 @@
   }
 }
 
+/* The photo carousel's active dot, filling over each photo's interval. */
+@keyframes dot-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
 /* Site-wide element defaults. Everything else is utilities in the components. */
 @layer base {
   html {
