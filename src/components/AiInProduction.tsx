@@ -10,7 +10,7 @@ export default function AiInProduction() {
       <p className="eyebrow text-sm text-violet">AI in production</p>
       <h3
         id="ai-heading"
-        className="mt-3 max-w-[34em] font-serif text-2xl leading-snug font-bold md:text-3xl"
+        className="mt-3 max-w-[34em] text-2xl leading-snug font-bold tracking-tight md:text-3xl"
       >
         I put AI where it changes an outcome, and I measure it by the result.
       </h3>

@@ -26,7 +26,7 @@ export default function ContactDialog() {
             <div>
               <h2
                 id="contact-dialog-title"
-                className="font-serif text-2xl font-bold"
+                className="text-2xl font-bold tracking-tight"
               >
                 Send me a message
               </h2>

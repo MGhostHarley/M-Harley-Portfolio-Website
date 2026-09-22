@@ -16,9 +16,9 @@ from fontTools.pens.transformPen import TransformPen
 
 ROOT = Path(__file__).resolve().parent.parent
 FONTS = ROOT / 'node_modules/@fontsource'
-PLAYFAIR = FONTS / 'playfair-display/files/playfair-display-latin-700-normal.woff'
-INTER = ROOT / 'node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2'
-MONO = FONTS / 'jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff'
+SERIF = FONTS / 'shrikhand/files/shrikhand-latin-400-normal.woff'
+SANS = ROOT / 'node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2'
+MONO = FONTS / 'dm-mono/files/dm-mono-latin-500-normal.woff'
 PUBLIC = ROOT / 'public'
 
 NIGHT = (5, 8, 22)
@@ -49,7 +49,7 @@ def gradient(width, height, stops=GRADIENT, angle=0):
 
 
 def inter(size, weight):
-    font = ImageFont.truetype(str(INTER), size)
+    font = ImageFont.truetype(str(SANS), size)
     font.set_variation_by_axes([weight])
     return font
 
@@ -67,7 +67,7 @@ def favicon_png(size):
     s = size * scale
     tile = gradient(s, s, angle=35)
     draw = ImageDraw.Draw(tile)
-    font = ImageFont.truetype(str(PLAYFAIR), round(s * 0.56))
+    font = ImageFont.truetype(str(SERIF), round(s * 0.56))
     box = draw.textbbox((0, 0), 'Em', font=font)
     x = (s - (box[2] - box[0])) / 2 - box[0]
     y = (s - (box[3] - box[1])) / 2 - box[1] - s * 0.01
@@ -79,7 +79,7 @@ def favicon_png(size):
 
 def favicon_svg():
     """Glyphs as paths, so the icon looks the same without the font installed."""
-    font = TTFont(str(PLAYFAIR))
+    font = TTFont(str(SERIF))
     glyphs = font.getGlyphSet()
     cmap = font.getBestCmap()
     units = font['head'].unitsPerEm
@@ -139,7 +139,7 @@ def social_preview():
     draw.text((left, 96 * S), 'SENIOR FULL-STACK SOFTWARE ENGINEER', font=ImageFont.truetype(str(MONO), 17 * S), fill=ACCENT)
 
     # Name with the brushstroke behind "Harley"
-    serif = ImageFont.truetype(str(PLAYFAIR), 92 * S)
+    serif = ImageFont.truetype(str(SERIF), 80 * S)
     name_y = 138 * S
     draw.text((left, name_y), 'Michael', font=serif, fill=SNOW)
     hx = left + draw.textlength('Michael ', font=serif)

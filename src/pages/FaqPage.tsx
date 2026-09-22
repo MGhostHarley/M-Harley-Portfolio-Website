@@ -69,7 +69,10 @@ export default function FaqPage() {
             className="flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-line bg-surface p-7"
           >
             <div>
-              <h2 id="faq-contact" className="font-serif text-2xl font-bold">
+              <h2
+                id="faq-contact"
+                className="text-2xl font-bold tracking-tight"
+              >
                 Still have a question?
               </h2>
               <p className="mt-1 text-muted">

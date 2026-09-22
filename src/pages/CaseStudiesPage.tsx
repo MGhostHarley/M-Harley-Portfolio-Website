@@ -64,7 +64,7 @@ export default function CaseStudiesPage() {
             <div>
               <h2
                 id="case-studies-contact"
-                className="font-serif text-2xl font-bold"
+                className="text-2xl font-bold tracking-tight"
               >
                 Want to go deeper on any of these?
               </h2>
