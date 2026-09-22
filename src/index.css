@@ -117,6 +117,10 @@
   body {
     overflow-x: clip;
   }
+  /* The page behind an open modal stays put. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
   body {
     min-width: 320px;
     line-height: 1.65;

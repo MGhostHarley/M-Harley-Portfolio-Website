@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import PauseButton from './PauseButton'
 import Stars from './Stars'
+import ContactDialog from './ContactDialog'
 import { MotionContext } from '../motion'
 import useMediaQuery from '../hooks/useMediaQuery'
 import useStoredToggle from '../hooks/useStoredToggle'
@@ -75,7 +76,7 @@ export default function Layout({ currentPage, children }: LayoutProps) {
         tabIndex={-1}
         className="relative z-1 focus:outline-none"
       >
-        {children}
+        <ContactDialog>{children}</ContactDialog>
       </main>
       {/* With reduced motion nothing animates, so there is nothing to pause.
           On phones the control sits in the footer instead of floating over text. */}

@@ -2,23 +2,43 @@ import { useId, useRef, type ReactNode } from 'react'
 import ContactForm from './ContactForm'
 import { buttonStyles } from './styles'
 import { CloseIcon } from './icons'
+import { OpenContactContext, useOpenContact } from '../contact'
 
-interface ContactDialogProps {
-  /** Text on the button that opens the dialog. */
+interface ContactButtonProps {
   label?: ReactNode
   variant?: keyof typeof buttonStyles
 }
 
-/** A button that opens the contact form in a modal dialog. */
-export default function ContactDialog({
+/** A button that opens the page's contact dialog. */
+export function ContactButton({
   label = (
     <>
       Send me a message <span aria-hidden="true">→</span>
     </>
   ),
   variant = 'primary',
-}: ContactDialogProps) {
+}: ContactButtonProps) {
+  const openContact = useOpenContact()
+  return (
+    <button
+      type="button"
+      className={buttonStyles[variant]}
+      onClick={openContact}
+    >
+      {label}
+    </button>
+  )
+}
+
+/**
+ * The page's one contact dialog. Every ContactButton inside it opens the same
+ * form, so a draft started from one button is still there from another.
+ */
+export default function ContactDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  // Only a press that starts and ends on the backdrop closes the dialog, so
+  // selecting text and releasing outside it doesn't.
+  const pressedBackdrop = useRef(false)
   const titleId = useId()
   const open = () => {
     const dialog = dialogRef.current
@@ -31,18 +51,20 @@ export default function ContactDialog({
   }
   const close = () => dialogRef.current?.close()
   return (
-    <>
-      <button type="button" className={buttonStyles[variant]} onClick={open}>
-        {label}
-      </button>
-      {/* showModal() traps focus, closes on Escape, and returns focus to the button. */}
+    <OpenContactContext value={open}>
+      {children}
+      {/* showModal() traps focus, closes on Escape, and returns focus to the button that opened it. */}
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- Escape already closes the dialog; the backdrop click is its pointer equivalent. */}
       <dialog
         ref={dialogRef}
         aria-labelledby={titleId}
-        // A click on the dialog element itself is a click on the backdrop.
+        // Events whose target is the dialog element itself are on the backdrop.
+        onPointerDown={(event) => {
+          pressedBackdrop.current = event.target === event.currentTarget
+        }}
         onClick={(event) => {
-          if (event.target === event.currentTarget) close()
+          if (pressedBackdrop.current && event.target === event.currentTarget)
+            close()
         }}
         className="m-auto w-[min(100%-2rem,560px)] rounded-2xl border border-line bg-dialog p-0 text-snow backdrop:bg-night/80 backdrop:backdrop-blur-sm"
       >
@@ -68,6 +90,6 @@ export default function ContactDialog({
           <ContactForm />
         </div>
       </dialog>
-    </>
+    </OpenContactContext>
   )
 }

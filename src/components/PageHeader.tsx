@@ -17,7 +17,7 @@ export default function PageHeader({ title, children }: PageHeaderProps) {
           alt=""
           width="800"
           height="1000"
-          className="size-24 shrink-0 rounded-full border border-accent/35 object-cover object-top md:size-28"
+          className="size-24 shrink-0 rounded-full border border-line object-cover object-top md:size-28"
         />
         <div>
           <h1 className={`mb-4 ${headingStyles}`}>{title}</h1>

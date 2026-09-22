@@ -1,4 +1,4 @@
-import ContactDialog from './ContactDialog'
+import { ContactButton } from './ContactDialog'
 import SocialLinks from './SocialLinks'
 import { headingStyles, sectionBandStyles } from './styles'
 
@@ -20,7 +20,7 @@ export default function Contact() {
           </p>
         </div>
         <div className="flex flex-col items-start gap-6 md:items-end">
-          <ContactDialog />
+          <ContactButton />
           <SocialLinks />
         </div>
       </div>

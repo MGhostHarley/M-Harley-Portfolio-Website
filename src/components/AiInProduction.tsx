@@ -1,9 +1,7 @@
 import { aiHighlights } from '../data/impact'
-import { textLinkStyles } from './styles'
 
-// Work that has its own case study is linked, not retold here.
+// Work with its own case study is tagged "AI" in Selected Work, not retold here.
 const described = aiHighlights.filter((item) => !item.caseStudyId)
-const linked = aiHighlights.filter((item) => item.caseStudyId)
 
 /** Production AI work, shown under the experience list. */
 export default function AiInProduction() {
@@ -28,21 +26,6 @@ export default function AiInProduction() {
           </div>
         ))}
       </dl>
-      <p className="mt-8 border-t border-line pt-5 text-body">
-        More in the case studies:{' '}
-        {linked.map(({ title, company, caseStudyId }, index) => (
-          <span key={title}>
-            {index > 0 && ' and '}
-            <a
-              className={textLinkStyles}
-              href={`/case-studies/#${caseStudyId}`}
-            >
-              {title.toLowerCase()} at {company}
-            </a>
-          </span>
-        ))}
-        .
-      </p>
     </section>
   )
 }

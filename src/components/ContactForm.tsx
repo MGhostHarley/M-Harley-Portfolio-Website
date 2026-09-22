@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useId,
   useRef,
   useState,
@@ -14,7 +15,11 @@ import {
   type ContactForm as ContactValues,
 } from '../utils/contact'
 import { EmailTimeoutError, sendContactEmail } from '../utils/sendEmail'
-import { buttonStyles } from './styles'
+import { buttonStyles, textLinkStyles } from './styles'
+import ExternalLink from './ExternalLink'
+import { profile } from '../data/profile'
+
+const linkedIn = profile.socials.find(({ icon }) => icon === 'linkedin')?.url
 
 interface Status {
   /** 'timedOut': the message may still arrive, so sending again is blocked. */
@@ -66,12 +71,30 @@ export default function ContactForm({ className }: { className?: string }) {
   const [values, setValues] = useState(emptyForm)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [status, setStatus] = useState<Status>({ type: 'idle', message: '' })
-  // Unique per form, since a page can hold more than one contact dialog.
   const idPrefix = useId()
+  const formRef = useRef<HTMLFormElement>(null)
   // A ref, not state, so a rapid double submit can't slip past before re-render.
   const inFlight = useRef(false)
   const sending = status.type === 'sending'
   const blocked = sending || status.type === 'timedOut'
+  // When sending fails, the dialog itself offers the way forward.
+  const offerLinkedIn =
+    status.type === 'timedOut' || status.message === messages.failed
+
+  // Closing the dialog keeps the draft but drops stale errors, so reopening
+  // starts clean. (A timed-out send stays blocked on purpose.)
+  useEffect(() => {
+    const dialog = formRef.current?.closest('dialog')
+    if (!dialog) return
+    const onClose = () => {
+      setErrors({})
+      setStatus((current) =>
+        current.type === 'error' ? { type: 'idle', message: '' } : current,
+      )
+    }
+    dialog.addEventListener('close', onClose)
+    return () => dialog.removeEventListener('close', onClose)
+  }, [])
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -147,6 +170,7 @@ export default function ContactForm({ className }: { className?: string }) {
 
   return (
     <form
+      ref={formRef}
       className={className}
       onSubmit={handleSubmit}
       noValidate
@@ -222,6 +246,14 @@ export default function ContactForm({ className }: { className?: string }) {
       >
         {status.message}
       </p>
+      {offerLinkedIn && linkedIn && (
+        <ExternalLink
+          href={linkedIn}
+          className={`inline-flex min-h-11 items-center ${textLinkStyles}`}
+        >
+          Message me on LinkedIn ↗
+        </ExternalLink>
+      )}
     </form>
   )
 }

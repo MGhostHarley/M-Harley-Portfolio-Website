@@ -1,6 +1,6 @@
 import Layout from '../components/Layout'
 import PageHeader from '../components/PageHeader'
-import ContactDialog from '../components/ContactDialog'
+import { ContactButton } from '../components/ContactDialog'
 import { faqGroups } from '../data/faqs'
 import { panelStyles } from '../components/styles'
 import { PlusIcon } from '../components/icons'
@@ -80,7 +80,7 @@ export default function FaqPage() {
                 Ask me directly and I'll get back to you.
               </p>
             </div>
-            <ContactDialog />
+            <ContactButton />
           </section>
         </div>
       </div>

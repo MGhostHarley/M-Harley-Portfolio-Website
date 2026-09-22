@@ -1,7 +1,7 @@
 import { profile } from '../data/profile'
 import PhotoCarousel from './PhotoCarousel'
 import SocialLinks from './SocialLinks'
-import ContactDialog from './ContactDialog'
+import { ContactButton } from './ContactDialog'
 import { experiences } from '../data/experience'
 import { buttonStyles } from './styles'
 
@@ -38,7 +38,7 @@ export default function Hero() {
           <a className={buttonStyles.primary} href="/case-studies/">
             Read case studies <span aria-hidden="true">→</span>
           </a>
-          <ContactDialog label="Get in touch" variant="secondary" />
+          <ContactButton label="Get in touch" variant="secondary" />
         </div>
         <SocialLinks className="mt-7 max-md:hidden" />
       </div>

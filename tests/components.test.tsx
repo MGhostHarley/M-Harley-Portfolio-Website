@@ -11,7 +11,7 @@ import {
 } from '@testing-library/react'
 import { act } from 'react'
 import userEvent from '@testing-library/user-event'
-import ContactDialog from '../src/components/ContactDialog'
+import ContactDialog, { ContactButton } from '../src/components/ContactDialog'
 import ContactForm from '../src/components/ContactForm'
 import PhotoCarousel from '../src/components/PhotoCarousel'
 import { MotionContext } from '../src/motion'
@@ -149,6 +149,10 @@ describe('ContactForm', () => {
       await waitFor(() =>
         expect(screen.getByRole('status').textContent).toContain(text),
       )
+      // The way forward is a real link, not just the word "LinkedIn".
+      expect(
+        screen.getByRole('link', { name: /Message me on LinkedIn/ }),
+      ).toBeTruthy()
       expect(
         screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
       ).toBe('Hello Em')
@@ -235,6 +239,16 @@ describe('Navbar links', () => {
 })
 
 describe('ContactDialog', () => {
+  it('gives every contact button on a page the same form', () => {
+    render(
+      <ContactDialog>
+        <ContactButton label="Get in touch" />
+        <ContactButton />
+      </ContactDialog>,
+    )
+    expect(screen.getAllByLabelText('Your name')).toHaveLength(1)
+  })
+
   it('opens the contact form as a modal', async () => {
     // jsdom has <dialog> but not showModal/close.
     HTMLDialogElement.prototype.showModal = vi.fn(function (
@@ -248,7 +262,11 @@ describe('ContactDialog', () => {
       this.open = false
     })
     const user = userEvent.setup()
-    render(<ContactDialog />)
+    render(
+      <ContactDialog>
+        <ContactButton />
+      </ContactDialog>,
+    )
 
     await user.click(screen.getByRole('button', { name: /Send me a message/ }))
     expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledOnce()

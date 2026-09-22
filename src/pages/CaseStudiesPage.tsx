@@ -1,7 +1,7 @@
 import Layout from '../components/Layout'
 import PageHeader from '../components/PageHeader'
 import CaseStudy from '../components/CaseStudy'
-import ContactDialog from '../components/ContactDialog'
+import { ContactButton } from '../components/ContactDialog'
 import { caseStudies } from '../data/caseStudies'
 import { companyLogos } from '../data/impact'
 import { profile } from '../data/profile'
@@ -70,7 +70,7 @@ export default function CaseStudiesPage() {
                 I'm happy to walk through the trade-offs in more detail.
               </p>
             </div>
-            <ContactDialog />
+            <ContactButton />
           </section>
         </div>
       </div>

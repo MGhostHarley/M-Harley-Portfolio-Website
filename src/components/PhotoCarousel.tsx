@@ -46,7 +46,7 @@ export default function PhotoCarousel() {
       onFocus={() => setHeld(true)}
       onBlur={onBlur}
     >
-      <div className="relative aspect-4/5 overflow-hidden rounded-[20px] border border-accent/35">
+      <div className="relative aspect-4/5 overflow-hidden rounded-[20px] border border-line">
         {photos.map(
           ({ src, alt }, index) =>
             mounted.has(index) && (
