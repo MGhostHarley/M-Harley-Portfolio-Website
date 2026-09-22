@@ -21,7 +21,7 @@ SANS = ROOT / 'node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wgh
 MONO = FONTS / 'dm-mono/files/dm-mono-latin-500-normal.woff'
 PUBLIC = ROOT / 'public'
 
-NIGHT = (5, 8, 22)
+NIGHT = (7, 9, 15)
 INK = (8, 11, 28)
 SNOW = (238, 236, 246)
 MUTED = (169, 163, 194)
@@ -67,7 +67,7 @@ LETTERS = 0.54  # font size
 LIFT = 0.07  # letters sit above center to make room for the stroke
 STROKE_W, STROKE_H, STROKE_GAP = 0.62, 0.075, 0.07
 RADIUS = 0.22
-EDGE = (40, 38, 72)  # a faint border so the tile holds its shape on dark tab bars
+EDGE = (48, 42, 40)  # a faint border so the tile holds its shape on dark tab bars
 
 
 def favicon_png(size, touch=False):

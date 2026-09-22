@@ -45,7 +45,7 @@ describe('TechChip', () => {
         ?.map(Number)
       expect(foreground).toHaveLength(3)
       const background = foreground!.map((channel, index) =>
-        Math.round(0.9 * [5, 8, 22][index] + 0.1 * channel),
+        Math.round(0.9 * [7, 9, 15][index] + 0.1 * channel),
       )
       const contrast =
         (luminance(foreground!) + 0.05) / (luminance(background) + 0.05)
