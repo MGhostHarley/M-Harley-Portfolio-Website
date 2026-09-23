@@ -1,7 +1,6 @@
 import { useLayoutEffect, type ReactNode } from 'react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import SkyControls from './SkyControls'
 import Stars from './Stars'
 import ContactDialog from './ContactDialog'
 import { MotionContext } from '../motion'
@@ -82,7 +81,7 @@ export default function Layout({ currentPage, children }: LayoutProps) {
         Skip to content
       </a>
       <Stars brightness={starBrightness} />
-      <Navbar currentPage={currentPage} />
+      <Navbar currentPage={currentPage} sky={skyControls} />
       <main
         id="main-content"
         tabIndex={-1}
@@ -90,21 +89,7 @@ export default function Layout({ currentPage, children }: LayoutProps) {
       >
         <ContactDialog>{children}</ContactDialog>
       </main>
-      {/* Floating only from 1280px, where the page margin leaves room for it;
-          narrower screens get the same controls in the footer, over the
-          same fixed sky, so they never cover text. */}
-      <Footer>
-        <SkyControls
-          {...skyControls}
-          orientation="horizontal"
-          className="xl:hidden"
-        />
-      </Footer>
-      <SkyControls
-        {...skyControls}
-        orientation="vertical"
-        className="fixed right-4 bottom-4 z-30 [view-transition-name:sky-controls] max-xl:hidden"
-      />
+      <Footer />
     </MotionContext>
   )
 }

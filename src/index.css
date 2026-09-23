@@ -18,23 +18,24 @@
   --breakpoint-md: 48rem; /* 768px */
   --breakpoint-lg: 66.25rem; /* 1060px */
 
-  --color-night: #07090f;
+  --color-night: #0a0b0e;
   --color-snow: #eeecf6;
   --color-body: #d7d3e8;
   --color-muted: #a9a3c2;
-  --color-faint: #85809b;
-  --color-line: rgb(210 210 220 / 12%);
-  /* Quiet, translucent charcoal, so the stars show through the cards. */
-  --color-surface: rgb(22 22 26 / 60%);
-  --color-band: rgb(22 22 26 / 40%); /* Fade at the top of each section band. */
-  --color-strip: rgb(14 15 20 / 55%); /* The Now strip under the hero. */
+  --color-faint: #8d88a2;
+  --color-line: rgb(210 214 225 / 12%);
+  /* Soft, slightly cool gray, translucent so the stars show through. Kept a
+     touch cooler than the page so it never reads warm beside it. */
+  --color-surface: rgb(42 44 50 / 50%);
+  --color-band: rgb(42 44 50 / 30%); /* Fade at the top of each section band. */
+  --color-strip: rgb(24 26 31 / 50%); /* The Now strip under the hero. */
   --color-accent: #70d7fa;
   --color-accent-hover: #9ae4fc;
   --color-coral: #ff9478; /* Marks AI work only. */
   --color-gold: #f7ce70;
   --color-live: #5ee6a8;
   --color-ink: #080b1c;
-  --color-dialog: #131318;
+  --color-dialog: #1a1c20;
   --color-error: #ffb3c7;
 
   --container-page: 1120px;

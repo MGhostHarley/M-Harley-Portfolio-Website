@@ -46,7 +46,7 @@ describe('TechChip', () => {
         ?.map(Number)
       expect(foreground).toHaveLength(3)
       const background = foreground!.map((channel, index) =>
-        Math.round(0.9 * [7, 9, 15][index] + 0.1 * channel),
+        Math.round(0.9 * [10, 11, 14][index] + 0.1 * channel),
       )
       const contrast =
         (luminance(foreground!) + 0.05) / (luminance(background) + 0.05)
@@ -251,7 +251,6 @@ describe('SkyControls', () => {
     brightness: 0.6,
     paused: false,
     onTogglePause: () => {},
-    orientation: 'vertical' as const,
   }
 
   it('reports star brightness as a percentage and passes changes on', () => {
@@ -282,14 +281,41 @@ describe('SkyControls', () => {
 describe('Navbar links', () => {
   it('offers the resume as a download and marks the current page', () => {
     render(<Navbar currentPage="/case-studies/" />)
-    const resume = screen.getByRole('link', { name: /Resume/ })
-    expect(resume.getAttribute('href')).toBe(resumeUrl)
-    expect(resume.hasAttribute('download')).toBe(true)
+    // One in the pill, one in the phone menu; CSS shows exactly one of them.
+    for (const resume of screen.getAllByRole('link', { name: /Resume/ })) {
+      expect(resume.getAttribute('href')).toBe(resumeUrl)
+      expect(resume.hasAttribute('download')).toBe(true)
+    }
     expect(
       screen
         .getByRole('link', { name: 'Case studies' })
         .getAttribute('aria-current'),
     ).toBe('page')
+  })
+})
+
+describe('Navbar sky controls', () => {
+  it('opens the star brightness and pause controls from the nav', async () => {
+    const user = userEvent.setup()
+    render(
+      <Navbar
+        sky={{
+          brightness: 1,
+          onBrightnessChange: () => {},
+          paused: false,
+          onTogglePause: () => {},
+          canPause: true,
+        }}
+      />,
+    )
+    const button = screen.getByRole('button', { name: /Star field/ })
+    await user.click(button)
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('slider', { name: 'Star brightness' })).toBeTruthy()
+
+    await user.keyboard('{Escape}')
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button)
   })
 })
 

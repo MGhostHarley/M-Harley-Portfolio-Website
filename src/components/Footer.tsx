@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import { profile, resumeUrl } from '../data/profile'
 
 const links = [
@@ -7,8 +6,7 @@ const links = [
   { title: 'Resume', href: resumeUrl, download: true },
 ]
 
-/** children: extra controls for the end of the row (the sky controls below 1280px). */
-export default function Footer({ children }: { children?: ReactNode }) {
+export default function Footer() {
   return (
     <footer className="relative z-1 border-t border-line">
       <div className="page flex flex-wrap items-center justify-between gap-4 py-10 text-sm text-faint">
@@ -28,7 +26,6 @@ export default function Footer({ children }: { children?: ReactNode }) {
             </li>
           ))}
         </ul>
-        {children}
       </div>
     </footer>
   )
