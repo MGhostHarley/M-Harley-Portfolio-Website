@@ -26,11 +26,14 @@ dist-ssr
 # Local design explorations
 design/
 
-# Local Impeccable design tooling
+# Local AI design tooling (Claude Code, Impeccable, Hallmark) and its docs
 .claude/
+CLAUDE.md
+CLAUDE.local.md
 .github/agents/
 .github/hooks/
 .github/skills/
 .impeccable/
+.hallmark/
 DESIGN.md
 PRODUCT.md

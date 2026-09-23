@@ -77,10 +77,27 @@ interface SavedAngles {
   time: number
 }
 
+/**
+ * Parses the saved sky position, or returns undefined unless all three values
+ * are finite numbers, so a damaged entry can't turn the angles into NaN and
+ * blank the sky.
+ */
+export function parseSavedAngles(raw: string | null): SavedAngles | undefined {
+  try {
+    const saved: unknown = JSON.parse(raw ?? 'null')
+    if (!saved || typeof saved !== 'object') return undefined
+    const { x, y, time } = saved as Record<string, unknown>
+    return [x, y, time].every(Number.isFinite)
+      ? { x: x as number, y: y as number, time: time as number }
+      : undefined
+  } catch {
+    return undefined
+  }
+}
+
 function readSavedAngles(): SavedAngles | undefined {
   try {
-    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? 'null')
-    return typeof saved?.x === 'number' ? saved : undefined
+    return parseSavedAngles(sessionStorage.getItem(STORAGE_KEY))
   } catch {
     return undefined
   }

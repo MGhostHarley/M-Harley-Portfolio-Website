@@ -23,9 +23,11 @@ export default function Stars({ brightness = 1 }: { brightness?: number }) {
   }, [])
 
   // Declared after the effect above, so the field exists when this first runs.
+  // At zero brightness the canvas is invisible, so don't keep drawing it.
+  const animating = motionEnabled && brightness > 0
   useEffect(() => {
-    fieldRef.current?.setAnimating(motionEnabled)
-  }, [motionEnabled])
+    fieldRef.current?.setAnimating(animating)
+  }, [animating])
 
   return (
     <canvas
