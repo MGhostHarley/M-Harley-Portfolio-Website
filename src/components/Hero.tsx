@@ -23,7 +23,7 @@ export default function Hero() {
           </span>
           {afterHighlight}
         </h1>
-        <p className="mb-6 text-lg text-muted">
+        <p className="mb-6 max-w-[48rem] font-mono text-sm leading-relaxed font-medium tracking-[0.12em] text-pretty text-accent uppercase">
           {experiences[0].title} at {experiences[0].company},{' '}
           {profile.location.split(',')[0]}
         </p>
