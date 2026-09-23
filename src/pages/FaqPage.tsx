@@ -1,26 +1,27 @@
 import Layout from '../components/Layout'
 import PageHeader from '../components/PageHeader'
-import ContactDialog from '../components/ContactDialog'
+import { ContactButton } from '../components/ContactDialog'
 import { faqGroups } from '../data/faqs'
 import { panelStyles } from '../components/styles'
+import { PlusIcon } from '../components/icons'
 
 const groupId = (index: number) => `faq-group-${index + 1}`
 
 export default function FaqPage() {
   return (
     <Layout currentPage="/faq/">
-      <PageHeader eyebrow="FAQ" title="Questions I get asked">
+      <PageHeader title="Questions I get asked">
         Quick answers about me, my work, and how to get in touch.
       </PageHeader>
 
-      <div className="page grid grid-cols-1 gap-14 py-14 lg:grid-cols-[220px_1fr] lg:py-20">
+      <div className="page grid grid-cols-1 gap-14 py-14 lg:grid-cols-[220px_minmax(0,1fr)] lg:py-20">
         <nav aria-label="FAQ topics" className="max-lg:hidden">
           <ol className="sticky top-24 grid gap-1 border-l border-line">
             {faqGroups.map(({ title }, index) => (
               <li key={title}>
                 <a
                   href={`#${groupId(index)}`}
-                  className="-ml-px block border-l-2 border-transparent py-2 pl-4.5 text-muted hover:border-accent hover:text-snow"
+                  className="-ml-px block border-l border-transparent py-2.5 pl-4.5 text-muted hover:border-accent hover:text-snow"
                 >
                   {title}
                 </a>
@@ -39,7 +40,7 @@ export default function FaqPage() {
             >
               <h2
                 id={`${groupId(index)}-title`}
-                className="mb-5 eyebrow text-sm md:text-base"
+                className="mb-5 text-xl font-semibold tracking-tight"
               >
                 {title}
               </h2>
@@ -54,10 +55,10 @@ export default function FaqPage() {
                         aria-hidden="true"
                         className="grid size-8 shrink-0 place-items-center rounded-full border border-line text-accent transition-transform group-open:rotate-45"
                       >
-                        +
+                        <PlusIcon />
                       </span>
                     </summary>
-                    <p className="px-6 pb-6 text-body">{answer}</p>
+                    <p className="max-w-[40em] px-6 pb-6 text-body">{answer}</p>
                   </details>
                 ))}
               </div>
@@ -79,7 +80,7 @@ export default function FaqPage() {
                 Ask me directly and I'll get back to you.
               </p>
             </div>
-            <ContactDialog />
+            <ContactButton />
           </section>
         </div>
       </div>

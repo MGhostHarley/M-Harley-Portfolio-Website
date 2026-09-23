@@ -18,6 +18,14 @@ describe('validateContact', () => {
     expect(errors.message).toBeDefined()
   })
 
+  it.each([
+    ['riley.example.com', 'Add the @ and domain'],
+    ['riley@nowhere', 'Check the part after @'],
+  ])('says what is wrong with the email %s', (email, message) => {
+    const { errors } = validateContact({ name: 'Em', email, message: 'Hi' })
+    expect(errors.email).toContain(message)
+  })
+
   it('trims valid input', () => {
     const result = validateContact({
       name: ' Ada ',

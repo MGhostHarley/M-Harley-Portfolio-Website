@@ -7,10 +7,11 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react'
 import { act } from 'react'
 import userEvent from '@testing-library/user-event'
-import ContactDialog from '../src/components/ContactDialog'
+import ContactDialog, { ContactButton } from '../src/components/ContactDialog'
 import ContactForm from '../src/components/ContactForm'
 import PhotoCarousel from '../src/components/PhotoCarousel'
 import { MotionContext } from '../src/motion'
@@ -18,8 +19,61 @@ import { photos } from '../src/data/photos'
 import { resumeUrl } from '../src/data/profile'
 import Layout from '../src/components/Layout'
 import PauseButton from '../src/components/PauseButton'
+import SkyControls from '../src/components/SkyControls'
 import Navbar from '../src/components/Navbar'
+import TechChip from '../src/components/TechChip'
+import About from '../src/components/About'
+import { skillGroups } from '../src/data/skills'
 import { EmailTimeoutError, sendContactEmail } from '../src/utils/sendEmail'
+
+const luminance = (channels: number[]) => {
+  const [r, g, b] = channels.map((channel) => {
+    const value = channel / 255
+    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+describe('TechChip', () => {
+  it.each(['Kafka', 'Next.js', 'Python'])(
+    'keeps the %s brand label readable on a tinted dark badge',
+    (name) => {
+      render(<TechChip name={name} />)
+      const chip = screen.getByText(name)
+      const foreground = chip.style
+        .getPropertyValue('--brand')
+        .match(/\d+/g)
+        ?.map(Number)
+      expect(foreground).toHaveLength(3)
+      const background = foreground!.map((channel, index) =>
+        Math.round(0.9 * [10, 11, 14][index] + 0.1 * channel),
+      )
+      const contrast =
+        (luminance(foreground!) + 0.05) / (luminance(background) + 0.05)
+      expect(contrast).toBeGreaterThanOrEqual(4.5)
+    },
+  )
+})
+
+describe('About skills', () => {
+  it.each(skillGroups.map((group) => [group.name, group.skills.length]))(
+    'shows at most 5 %s skills before "+N more" when there are more than 6',
+    (name, count) => {
+      render(<About />)
+      const group = within(screen.getByRole('region', { name }))
+      const [firstList] = group.getAllByRole('list')
+      if (count > 6) {
+        expect(within(firstList).getAllByRole('listitem')).toHaveLength(5)
+        expect(group.getByText(`+${count - 5} more`)).toBeTruthy()
+        // The rest stay in the HTML for search engines, just hidden.
+        expect(firstList.querySelectorAll('li')).toHaveLength(count)
+      } else {
+        expect(within(firstList).getAllByRole('listitem')).toHaveLength(count)
+        expect(group.queryByText(/more$/)).toBeNull()
+      }
+    },
+  )
+})
 
 // Keep the real module (for EmailTimeoutError) but never send real email.
 vi.mock('../src/utils/sendEmail', async (importOriginal) => ({
@@ -44,6 +98,8 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup()
+  // The contact form keeps its draft in sessionStorage; start each test clean.
+  sessionStorage.clear()
   vi.clearAllMocks()
   vi.restoreAllMocks()
   vi.unstubAllGlobals()
@@ -98,6 +154,10 @@ describe('ContactForm', () => {
       await waitFor(() =>
         expect(screen.getByRole('status').textContent).toContain(text),
       )
+      // The way forward is a real link, not just the word "LinkedIn".
+      expect(
+        screen.getByRole('link', { name: /Message me on LinkedIn/ }),
+      ).toBeTruthy()
       expect(
         screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
       ).toBe('Hello Em')
@@ -111,6 +171,25 @@ describe('ContactForm', () => {
       ).toBe(blocked)
     },
   )
+
+  it('keeps a draft across a reload and clears it after sending', async () => {
+    vi.mocked(sendContactEmail).mockResolvedValue(undefined)
+    const user = userEvent.setup()
+    const { unmount } = render(<ContactForm />)
+    await user.type(screen.getByLabelText('Your message'), 'Half-written')
+    unmount()
+
+    render(<ContactForm />)
+    expect(
+      screen.getByLabelText<HTMLTextAreaElement>('Your message').value,
+    ).toBe('Half-written')
+
+    await user.type(screen.getByLabelText('Your name'), 'Ada')
+    await user.type(screen.getByLabelText('Your email'), 'ada@example.com')
+    await user.click(screen.getByRole('button', { name: 'Send message' }))
+    await waitFor(() => expect(sendContactEmail).toHaveBeenCalledOnce())
+    expect(sessionStorage.getItem('contact-draft')).toBeNull()
+  })
 
   it('silently accepts honeypot submissions without sending email', async () => {
     const user = userEvent.setup()
@@ -153,7 +232,9 @@ describe('PauseButton', () => {
       <PauseButton paused={false} onToggle={onToggle} />,
     )
 
-    const button = screen.getByRole('button', { name: 'Pause animation' })
+    const button = screen.getByRole('button', {
+      name: 'Pause motion and photos',
+    })
     expect(button.getAttribute('aria-pressed')).toBe('false')
     await user.click(button)
     expect(onToggle).toHaveBeenCalledOnce()
@@ -161,18 +242,52 @@ describe('PauseButton', () => {
     rerender(<PauseButton paused onToggle={onToggle} />)
     expect(
       screen
-        .getByRole('button', { name: 'Resume animation' })
+        .getByRole('button', { name: 'Resume motion and photos' })
         .getAttribute('aria-pressed'),
     ).toBe('true')
+  })
+})
+
+describe('SkyControls', () => {
+  const props = {
+    brightness: 0.6,
+    paused: false,
+    onTogglePause: () => {},
+  }
+
+  it('reports star brightness as a percentage and passes changes on', () => {
+    const onBrightnessChange = vi.fn()
+    render(
+      <SkyControls
+        {...props}
+        onBrightnessChange={onBrightnessChange}
+        canPause
+      />,
+    )
+    const slider = screen.getByRole('slider', { name: 'Star brightness' })
+    expect(slider.getAttribute('aria-valuetext')).toBe('60%')
+    fireEvent.change(slider, { target: { value: '0.25' } })
+    expect(onBrightnessChange).toHaveBeenCalledWith(0.25)
+  })
+
+  it('leaves out the pause button when motion is reduced', () => {
+    render(
+      <SkyControls {...props} onBrightnessChange={() => {}} canPause={false} />,
+    )
+    expect(
+      screen.queryByRole('button', { name: /motion and photos/ }),
+    ).toBeNull()
   })
 })
 
 describe('Navbar links', () => {
   it('offers the resume as a download and marks the current page', () => {
     render(<Navbar currentPage="/case-studies/" />)
-    const resume = screen.getByRole('link', { name: /Resume/ })
-    expect(resume.getAttribute('href')).toBe(resumeUrl)
-    expect(resume.hasAttribute('download')).toBe(true)
+    // One in the pill, one in the phone menu; CSS shows exactly one of them.
+    for (const resume of screen.getAllByRole('link', { name: /Resume/ })) {
+      expect(resume.getAttribute('href')).toBe(resumeUrl)
+      expect(resume.hasAttribute('download')).toBe(true)
+    }
     expect(
       screen
         .getByRole('link', { name: 'Case studies' })
@@ -181,7 +296,42 @@ describe('Navbar links', () => {
   })
 })
 
+describe('Navbar sky controls', () => {
+  it('opens the star brightness and pause controls from the nav', async () => {
+    const user = userEvent.setup()
+    render(
+      <Navbar
+        sky={{
+          brightness: 1,
+          onBrightnessChange: () => {},
+          paused: false,
+          onTogglePause: () => {},
+          canPause: true,
+        }}
+      />,
+    )
+    const button = screen.getByRole('button', { name: /Star field/ })
+    await user.click(button)
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('slider', { name: 'Star brightness' })).toBeTruthy()
+
+    await user.keyboard('{Escape}')
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button)
+  })
+})
+
 describe('ContactDialog', () => {
+  it('gives every contact button on a page the same form', () => {
+    render(
+      <ContactDialog>
+        <ContactButton label="Get in touch" />
+        <ContactButton />
+      </ContactDialog>,
+    )
+    expect(screen.getAllByLabelText('Your name')).toHaveLength(1)
+  })
+
   it('opens the contact form as a modal', async () => {
     // jsdom has <dialog> but not showModal/close.
     HTMLDialogElement.prototype.showModal = vi.fn(function (
@@ -195,7 +345,11 @@ describe('ContactDialog', () => {
       this.open = false
     })
     const user = userEvent.setup()
-    render(<ContactDialog />)
+    render(
+      <ContactDialog>
+        <ContactButton />
+      </ContactDialog>,
+    )
 
     await user.click(screen.getByRole('button', { name: /Send me a message/ }))
     expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledOnce()
@@ -237,6 +391,23 @@ describe('PhotoCarousel', () => {
     expect(loaded()).toBe(2)
     act(() => vi.advanceTimersByTime(15_000))
     expect(loaded()).toBe(3)
+    vi.useRealTimers()
+  })
+
+  it('holds the photo while focus is inside it', () => {
+    vi.useFakeTimers()
+    render(<PhotoCarousel />)
+    const dot = screen.getByRole('button', {
+      name: `Show photo 1 of ${photos.length}`,
+    })
+
+    act(() => dot.focus())
+    act(() => vi.advanceTimersByTime(30_000))
+    expect(visibleAlt()).toBe(photos[0].alt)
+
+    act(() => dot.blur())
+    act(() => vi.advanceTimersByTime(15_000))
+    expect(visibleAlt()).toBe(photos[1].alt)
     vi.useRealTimers()
   })
 

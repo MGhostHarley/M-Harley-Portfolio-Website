@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FocusEvent, type PointerEvent } from 'react'
 import { photos } from '../data/photos'
 import { useMotionEnabled } from '../motion'
 
 const INTERVAL_MS = 15_000
 
-/** Cross-fades through the photos; stops when animation is paused or reduced. */
+/**
+ * Cross-fades through the photos. Stops when animation is paused or reduced,
+ * and holds while a mouse is over it or focus is inside it (WCAG 2.2.2).
+ */
 export default function PhotoCarousel() {
   const [current, setCurrent] = useState(0)
-  const motionEnabled = useMotionEnabled()
+  const [held, setHeld] = useState(false)
+  const rotating = useMotionEnabled() && !held
   // Only mount the photo on show and the next one, so the rest aren't
   // downloaded until shortly before they appear.
   const next = (current + 1) % photos.length
@@ -15,18 +19,34 @@ export default function PhotoCarousel() {
   if (!mounted.has(current) || !mounted.has(next))
     setMounted(new Set([...mounted, current, next]))
 
+  // Restarts on every photo change and every release of a hold, in step with
+  // the progress fill below, which remounts on the same changes.
   useEffect(() => {
-    if (!motionEnabled) return
+    if (!rotating) return
     const timer = setInterval(
       () => setCurrent((index) => (index + 1) % photos.length),
       INTERVAL_MS,
     )
     return () => clearInterval(timer)
-  }, [motionEnabled, current])
+  }, [rotating, current])
+
+  // Touch "hovers" never end, so only a real mouse holds the photo.
+  const onPointer = (hold: boolean) => (event: PointerEvent) => {
+    if (event.pointerType === 'mouse') setHeld(hold)
+  }
+  const onBlur = (event: FocusEvent) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) setHeld(false)
+  }
 
   return (
-    <figure className="relative w-full max-w-65 justify-self-center md:max-w-none">
-      <div className="relative aspect-4/5 overflow-hidden rounded-[20px] border border-accent/35 shadow-[0_30px_80px_-30px_rgb(193_118_223/45%)]">
+    <figure
+      className="relative w-full max-w-52 justify-self-center md:max-w-none"
+      onPointerEnter={onPointer(true)}
+      onPointerLeave={onPointer(false)}
+      onFocus={() => setHeld(true)}
+      onBlur={onBlur}
+    >
+      <div className="relative aspect-4/5 overflow-hidden rounded-[20px] border border-line">
         {photos.map(
           ({ src, alt }, index) =>
             mounted.has(index) && (
@@ -43,21 +63,38 @@ export default function PhotoCarousel() {
             ),
         )}
       </div>
-      <figcaption className="mt-3 flex justify-center gap-2">
-        {photos.map(({ alt }, index) => (
-          <button
-            key={alt}
-            type="button"
-            onClick={() => setCurrent(index)}
-            aria-label={`Show photo ${index + 1} of ${photos.length}`}
-            aria-current={index === current}
-            className="grid size-6 place-items-center"
-          >
-            <span
-              className={`block h-1.5 rounded-full transition-all ${index === current ? 'w-5 bg-accent' : 'w-1.5 bg-faint'}`}
-            />
-          </button>
-        ))}
+      <figcaption className="mt-3 flex justify-center">
+        {photos.map(({ alt }, index) => {
+          const active = index === current
+          return (
+            <button
+              key={alt}
+              type="button"
+              onClick={() => setCurrent(index)}
+              aria-label={`Show photo ${index + 1} of ${photos.length}`}
+              aria-current={active}
+              className="grid size-11 place-items-center"
+            >
+              <span
+                className={`relative block h-1.5 overflow-hidden rounded-full ${active ? 'w-5 bg-accent/30' : 'w-1.5 bg-faint'}`}
+              >
+                {/* Fills over the interval, so it's visible that the photo
+                    changes on a timer; solid while held or paused. */}
+                {active && (
+                  <span
+                    key={`${current}-${rotating}`}
+                    className="absolute inset-0 origin-left bg-accent"
+                    style={
+                      rotating
+                        ? { animation: `dot-fill ${INTERVAL_MS}ms linear` }
+                        : undefined
+                    }
+                  />
+                )}
+              </span>
+            </button>
+          )
+        })}
       </figcaption>
     </figure>
   )

@@ -11,7 +11,7 @@ export default function CompanyBadge({ company }: { company: string }) {
         height="96"
         className="size-6 rounded-md"
       />
-      <span className="font-semibold text-accent">{company}</span>
+      <span className="font-semibold text-snow">{company}</span>
     </span>
   )
 }

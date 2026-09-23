@@ -21,7 +21,7 @@ SANS = ROOT / 'node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wgh
 MONO = FONTS / 'dm-mono/files/dm-mono-latin-500-normal.woff'
 PUBLIC = ROOT / 'public'
 
-NIGHT = (5, 8, 22)
+NIGHT = (10, 11, 14)
 INK = (8, 11, 28)
 SNOW = (238, 236, 246)
 MUTED = (169, 163, 194)
@@ -60,20 +60,37 @@ def rounded_mask(size, radius):
     return mask
 
 
-# ---------- Favicon: the hero's "Em" mark ----------
+# ---------- Favicon: the nav's "Em" on the night sky, underlined by the name-highlight gradient ----------
 
-def favicon_png(size):
+# Shared proportions (fractions of the icon's size), so the PNG and SVG match.
+LETTERS = 0.54  # font size
+LIFT = 0.07  # letters sit above center to make room for the stroke
+STROKE_W, STROKE_H, STROKE_GAP = 0.62, 0.075, 0.07
+RADIUS = 0.22
+EDGE = (44, 46, 54)  # a faint border so the tile holds its shape on dark tab bars
+
+
+def favicon_png(size, touch=False):
+    """touch: a full-bleed square for iOS, which rounds the corners itself."""
     scale = 4  # draw large, then downsample for smooth edges
     s = size * scale
-    tile = gradient(s, s, angle=35)
+    tile = Image.new('RGB', (s, s), NIGHT)
     draw = ImageDraw.Draw(tile)
-    font = ImageFont.truetype(str(SERIF), round(s * 0.56))
+    if not touch:
+        draw.rounded_rectangle((0, 0, s - 1, s - 1), round(s * RADIUS), outline=EDGE, width=max(scale, round(s * 0.03)))
+    font = ImageFont.truetype(str(SERIF), round(s * LETTERS))
     box = draw.textbbox((0, 0), 'Em', font=font)
     x = (s - (box[2] - box[0])) / 2 - box[0]
-    y = (s - (box[3] - box[1])) / 2 - box[1] - s * 0.01
-    draw.text((x, y), 'Em', font=font, fill=INK)
+    y = (s - (box[3] - box[1])) / 2 - box[1] - s * LIFT
+    draw.text((x, y), 'Em', font=font, fill=SNOW)
+    sw, sh = round(s * STROKE_W), round(s * STROKE_H)
+    stroke = gradient(sw, sh)
+    top = round(y + box[3] + s * STROKE_GAP)
+    tile.paste(stroke, ((s - sw) // 2, top), rounded_mask((sw, sh), sh // 2))
+    if touch:
+        return tile.resize((size, size), Image.LANCZOS)
     icon = Image.new('RGBA', (s, s), (0, 0, 0, 0))
-    icon.paste(tile, (0, 0), rounded_mask((s, s), round(s * 0.22)))
+    icon.paste(tile, (0, 0), rounded_mask((s, s), round(s * RADIUS)))
     return icon.resize((size, size), Image.LANCZOS)
 
 
@@ -83,25 +100,28 @@ def favicon_svg():
     glyphs = font.getGlyphSet()
     cmap = font.getBestCmap()
     units = font['head'].unitsPerEm
-    size, font_size = 64, 64 * 0.56
-    k = font_size / units
+    size = 64
+    k = size * LETTERS / units
     names = [cmap[ord(c)] for c in 'Em']
     advance = sum(font['hmtx'][n][0] for n in names) * k
     ascent = font['OS/2'].sCapHeight * k
-    x0, baseline = (size - advance) / 2, (size + ascent) / 2
+    x0, baseline = (size - advance) / 2, (size + ascent) / 2 - size * LIFT
     pen = SVGPathPen(glyphs)
     x = x0
     for n in names:
         glyphs[n].draw(TransformPen(pen, (k, 0, 0, -k, x, baseline)))
         x += font['hmtx'][n][0] * k
-    stops = ''.join(
-        f'<stop offset="{i / 2:.1f}" stop-color="#{r:02x}{g:02x}{b:02x}"/>' for i, (r, g, b) in enumerate(GRADIENT)
-    )
+    hex_color = lambda rgb: '#%02x%02x%02x' % rgb
+    stops = ''.join(f'<stop offset="{i / 2:.1f}" stop-color="{hex_color(c)}"/>' for i, c in enumerate(GRADIENT))
+    sw, sh = size * STROKE_W, size * STROKE_H
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}">'
-        f'<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0.7">{stops}</linearGradient></defs>'
-        f'<rect width="{size}" height="{size}" rx="{size * 0.22:.1f}" fill="url(#g)"/>'
-        f'<path fill="#080b1c" d="{pen.getCommands()}"/></svg>\n'
+        f'<defs><linearGradient id="g">{stops}</linearGradient></defs>'
+        f'<rect x="1" y="1" width="{size - 2}" height="{size - 2}" rx="{size * RADIUS:.1f}" '
+        f'fill="{hex_color(NIGHT)}" stroke="{hex_color(EDGE)}" stroke-width="2"/>'
+        f'<path fill="{hex_color(SNOW)}" d="{pen.getCommands()}"/>'
+        f'<rect x="{(size - sw) / 2:.2f}" y="{baseline + size * STROKE_GAP:.2f}" width="{sw:.2f}" height="{sh:.2f}" '
+        f'rx="{sh / 2:.2f}" fill="url(#g)"/></svg>\n'
     )
 
 
@@ -124,23 +144,15 @@ def stars(img, count, seed=20260918):
 def social_preview():
     W, H, S = 1200, 630, 2  # supersampled
     w, h = W * S, H * S
+    # Flat night sky with stars, like the site: no colored glows.
     img = Image.new('RGB', (w, h), NIGHT)
-
-    glow = Image.new('RGB', (w, h), NIGHT)
-    gd = ImageDraw.Draw(glow)
-    gd.ellipse((-w * 0.25, -h * 0.9, w * 0.55, h * 0.7), fill=(40, 22, 80))
-    gd.ellipse((w * 0.62, h * 0.3, w * 1.25, h * 1.4), fill=(14, 40, 70))
-    img = Image.blend(img, glow.filter(ImageFilter.GaussianBlur(160 * S)), 0.9)
     stars(img, 420)
     draw = ImageDraw.Draw(img, 'RGBA')
 
     left = 80 * S
-    # Eyebrow
-    draw.text((left, 96 * S), 'SENIOR FULL-STACK SOFTWARE ENGINEER', font=ImageFont.truetype(str(MONO), 17 * S), fill=ACCENT)
-
     # Name with the brushstroke behind "Harley"
     serif = ImageFont.truetype(str(SERIF), 80 * S)
-    name_y = 138 * S
+    name_y = 100 * S
     draw.text((left, name_y), 'Michael', font=serif, fill=SNOW)
     hx = left + draw.textlength('Michael ', font=serif)
     hb = draw.textbbox((hx, name_y), 'Harley', font=serif)
@@ -157,19 +169,16 @@ def social_preview():
     draw = ImageDraw.Draw(img, 'RGBA')
     draw.text((hx, name_y), 'Harley', font=serif, fill=SNOW)
 
-    # "Most people call me Em" with the gradient mark
+    # The role reads as a sentence under the name, as in the site's hero.
+    draw.text((left, 222 * S), 'Senior Full-Stack Software Engineer in San Francisco', font=inter(25 * S, 400), fill=MUTED)
+
+    # "Most people call me Em", with Em in bold as on the site
     body = inter(30 * S, 450)
-    line_y = 282 * S
+    line_y = 286 * S
     text = 'Most people call me '
     draw.text((left, line_y), text, font=body, fill=SNOW)
     mx = left + draw.textlength(text, font=body)
-    em_font = inter(30 * S, 650)
-    eb = [round(v) for v in draw.textbbox((mx + 10 * S, line_y), 'Em', font=em_font)]
-    pad = 9 * S
-    mark = gradient(eb[2] - eb[0] + 2 * pad, eb[3] - eb[1] + 2 * pad)
-    img.paste(mark, (eb[0] - pad, eb[1] - pad), rounded_mask(mark.size, 7 * S))
-    draw = ImageDraw.Draw(img, 'RGBA')
-    draw.text((mx + 10 * S, line_y), 'Em', font=em_font, fill=INK)
+    draw.text((mx, line_y), 'Em.', font=inter(30 * S, 650), fill=SNOW)
 
     # Current role
     role_y = 350 * S
@@ -179,25 +188,23 @@ def social_preview():
     draw.text((px, role_y), '  ·  Data systems for fusion hardware testing', font=inter(23 * S, 400), fill=MUTED)
 
     # Stack chips
-    chip_font = ImageFont.truetype(str(MONO), 19 * S)
+    chip_font = inter(19 * S, 500)
     cx, cy = left, 420 * S
     for label in ['Kafka', 'Go', 'Python', 'TypeScript']:
         tw = draw.textlength(label, font=chip_font)
         box = (cx, cy, cx + tw + 32 * S, cy + 44 * S)
-        draw.rounded_rectangle(box, 22 * S, fill=ACCENT + (38,), outline=ACCENT + (170,), width=2 * S)
-        draw.text((cx + 16 * S, cy + 10 * S), label, font=chip_font, fill=ACCENT)
+        # Neutral like the site's Now strip: cyan is kept for things you can click.
+        draw.rounded_rectangle(box, 22 * S, fill=MUTED + (26,), outline=MUTED + (110,), width=2 * S)
+        draw.text((cx + 16 * S, cy + 10 * S), label, font=chip_font, fill=SNOW)
         cx = box[2] + 12 * S
 
     draw.text((left, 540 * S), 'emharley.com', font=ImageFont.truetype(str(MONO), 22 * S), fill=MUTED)
 
-    # Photo in a glowing frame on the right
+    # Photo on the right with the site's thin cyan frame
     photo = Image.open(ROOT / 'src/assets/photos/dog.webp').convert('RGB')
     pw, ph = 320 * S, 400 * S
     photo = photo.resize((pw, ph), Image.LANCZOS)
     px0, py0 = w - pw - 80 * S, (h - ph) // 2
-    halo = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    ImageDraw.Draw(halo).rounded_rectangle((px0 - 10 * S, py0 + 20 * S, px0 + pw + 10 * S, py0 + ph + 30 * S), 30 * S, fill=(193, 118, 223, 120))
-    img.paste(halo.filter(ImageFilter.GaussianBlur(40 * S)), (0, 0), halo.filter(ImageFilter.GaussianBlur(40 * S)))
     img.paste(photo, (px0, py0), rounded_mask((pw, ph), 26 * S))
     draw = ImageDraw.Draw(img, 'RGBA')
     draw.rounded_rectangle((px0, py0, px0 + pw, py0 + ph), 26 * S, outline=ACCENT + (120,), width=2 * S)
@@ -212,7 +219,7 @@ if __name__ == '__main__':
     favicon_png(96).save(PUBLIC / 'favicon-96x96.png')
     # For crawlers and tools that request /favicon.ico without reading the page.
     favicon_png(48).save(PUBLIC / 'favicon.ico', sizes=[(16, 16), (32, 32), (48, 48)])
-    favicon_png(180).convert('RGB').save(PUBLIC / 'apple-touch-icon.png')  # iOS rounds the corners itself
+    favicon_png(180, touch=True).save(PUBLIC / 'apple-touch-icon.png')
     social_preview().save(PUBLIC / 'social-preview.png', optimize=True)
     for f in ['favicon.svg', 'favicon.ico', 'favicon-32x32.png', 'favicon-96x96.png', 'apple-touch-icon.png', 'social-preview.png']:
         print(f, (PUBLIC / f).stat().st_size // 1024, 'kB')

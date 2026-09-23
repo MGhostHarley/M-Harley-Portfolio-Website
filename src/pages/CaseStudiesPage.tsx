@@ -1,7 +1,7 @@
 import Layout from '../components/Layout'
 import PageHeader from '../components/PageHeader'
 import CaseStudy from '../components/CaseStudy'
-import ContactDialog from '../components/ContactDialog'
+import { ContactButton } from '../components/ContactDialog'
 import { caseStudies } from '../data/caseStudies'
 import { companyLogos } from '../data/impact'
 import { profile } from '../data/profile'
@@ -13,25 +13,23 @@ export default function CaseStudiesPage() {
   const active = useActiveSection(studyIds) ?? studyIds[0]
   return (
     <Layout currentPage="/case-studies/">
-      <PageHeader eyebrow="Case studies" title="How I build production systems">
+      <PageHeader title="How I build production systems">
         <strong className="font-medium text-snow">{profile.name}</strong>,{' '}
         {profile.title.toLowerCase()}. Three systems I built, how I approached
         them, and what changed as a result.
       </PageHeader>
 
-      <div className="page grid grid-cols-1 gap-14 pt-14 lg:grid-cols-[220px_1fr] lg:pt-16">
+      <div className="page grid grid-cols-1 gap-14 pt-14 lg:grid-cols-[220px_minmax(0,1fr)] lg:pt-16">
         <nav aria-label="Case studies" className="max-lg:hidden">
           <div className="sticky top-24">
-            <p className="font-mono text-xs tracking-widest text-faint uppercase">
-              Case studies
-            </p>
+            <p className="text-sm font-semibold text-muted">Case studies</p>
             <ol className="mt-4 border-l border-line">
               {caseStudies.map(({ id, title, company }) => (
                 <li key={id}>
                   <a
                     href={`#${id}`}
                     aria-current={active === id ? 'location' : undefined}
-                    className="-ml-px flex gap-3 border-l-2 border-transparent py-2.5 pl-4.5 text-[0.92rem] leading-snug text-muted hover:text-snow aria-[current=location]:border-accent aria-[current=location]:text-snow"
+                    className="-ml-px flex gap-3 border-l border-transparent py-2.5 pl-4.5 text-[0.92rem] leading-snug text-muted hover:text-snow aria-[current=location]:border-accent aria-[current=location]:text-snow"
                   >
                     <img
                       src={companyLogos[company]}
@@ -72,7 +70,7 @@ export default function CaseStudiesPage() {
                 I'm happy to walk through the trade-offs in more detail.
               </p>
             </div>
-            <ContactDialog />
+            <ContactButton />
           </section>
         </div>
       </div>

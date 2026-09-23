@@ -1,11 +1,12 @@
 import { useLayoutEffect, type ReactNode } from 'react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import PauseButton from './PauseButton'
 import Stars from './Stars'
+import ContactDialog from './ContactDialog'
 import { MotionContext } from '../motion'
 import useMediaQuery from '../hooks/useMediaQuery'
 import useStoredToggle from '../hooks/useStoredToggle'
+import useStoredNumber from '../hooks/useStoredNumber'
 
 interface LayoutProps {
   /** href of this page, so the navigation can mark it as current. */
@@ -58,6 +59,17 @@ function useScrollToHash() {
 export default function Layout({ currentPage, children }: LayoutProps) {
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const [paused, togglePaused] = useStoredToggle('animation-paused')
+  const [starBrightness, setStarBrightness] = useStoredNumber(
+    'star-brightness',
+    1,
+  )
+  const skyControls = {
+    brightness: starBrightness,
+    onBrightnessChange: setStarBrightness,
+    paused,
+    onTogglePause: togglePaused,
+    canPause: !reducedMotion,
+  }
   useScrollToHash()
 
   return (
@@ -68,20 +80,16 @@ export default function Layout({ currentPage, children }: LayoutProps) {
       >
         Skip to content
       </a>
-      <Stars />
-      <Navbar currentPage={currentPage} />
+      <Stars brightness={starBrightness} />
+      <Navbar currentPage={currentPage} sky={skyControls} />
       <main
         id="main-content"
         tabIndex={-1}
         className="relative z-1 focus:outline-none"
       >
-        {children}
+        <ContactDialog>{children}</ContactDialog>
       </main>
       <Footer />
-      {/* With reduced motion nothing animates, so there is nothing to pause. */}
-      {!reducedMotion && (
-        <PauseButton paused={paused} onToggle={togglePaused} />
-      )}
     </MotionContext>
   )
 }

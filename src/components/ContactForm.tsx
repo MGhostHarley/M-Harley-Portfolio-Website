@@ -1,5 +1,14 @@
-import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FocusEvent,
+  type FormEvent,
+} from 'react'
+import {
+  contactFields,
   maxLengths,
   validateContact,
   type ContactErrors,
@@ -7,7 +16,11 @@ import {
   type ContactForm as ContactValues,
 } from '../utils/contact'
 import { EmailTimeoutError, sendContactEmail } from '../utils/sendEmail'
-import { buttonStyles } from './styles'
+import { buttonStyles, textLinkStyles } from './styles'
+import ExternalLink from './ExternalLink'
+import { profile } from '../data/profile'
+
+const linkedIn = profile.socials.find(({ icon }) => icon === 'linkedin')?.url
 
 interface Status {
   /** 'timedOut': the message may still arrive, so sending again is blocked. */
@@ -24,9 +37,38 @@ const statusColors: Record<Status['type'], string> = {
 }
 
 const inputStyles =
-  'block w-full rounded-lg border border-faint/60 bg-night/60 px-4 py-3 text-snow focus:border-accent aria-[invalid=true]:border-error'
+  'block min-h-11 w-full rounded-lg border border-faint/60 bg-night/60 px-4 py-2 text-snow focus:border-accent aria-[invalid=true]:border-error'
 
 const emptyForm: ContactValues = { name: '', email: '', message: '' }
+
+// The draft survives a reload or a phone discarding the tab. Storage can be
+// unavailable (private windows, blocked site data), so every access is guarded.
+const DRAFT_KEY = 'contact-draft'
+
+function loadDraft(): ContactValues {
+  try {
+    const saved: unknown = JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? '{}')
+    const draft = { ...emptyForm }
+    if (saved && typeof saved === 'object')
+      for (const field of contactFields) {
+        const value = (saved as Record<string, unknown>)[field]
+        if (typeof value === 'string') draft[field] = value
+      }
+    return draft
+  } catch {
+    return emptyForm
+  }
+}
+
+function saveDraft(values: ContactValues) {
+  try {
+    if (Object.values(values).some((value) => value.trim()))
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(values))
+    else sessionStorage.removeItem(DRAFT_KEY)
+  } catch {
+    // Storage unavailable: the draft just won't outlive the page.
+  }
+}
 
 // Hidden spam trap: people never see it, bots fill it in. The name avoids
 // words like "website" or "url" so browser autofill won't fill it either.
@@ -56,20 +98,64 @@ const fields: {
 ]
 
 export default function ContactForm({ className }: { className?: string }) {
-  const [values, setValues] = useState(emptyForm)
+  const [values, setValues] = useState(loadDraft)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [status, setStatus] = useState<Status>({ type: 'idle', message: '' })
+  const idPrefix = useId()
+  const formRef = useRef<HTMLFormElement>(null)
   // A ref, not state, so a rapid double submit can't slip past before re-render.
   const inFlight = useRef(false)
   const sending = status.type === 'sending'
   const blocked = sending || status.type === 'timedOut'
+  // When sending fails, the dialog itself offers the way forward.
+  const offerLinkedIn =
+    status.type === 'timedOut' || status.message === messages.failed
+
+  // Closing the dialog keeps the draft but drops stale errors, so reopening
+  // starts clean. (A timed-out send stays blocked on purpose.)
+  useEffect(() => saveDraft(values), [values])
+
+  useEffect(() => {
+    const dialog = formRef.current?.closest('dialog')
+    if (!dialog) return
+    const onClose = () => {
+      setErrors({})
+      setStatus((current) =>
+        current.type === 'error' ? { type: 'idle', message: '' } : current,
+      )
+    }
+    dialog.addEventListener('close', onClose)
+    return () => dialog.removeEventListener('close', onClose)
+  }, [])
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target
     setValues((previous) => ({ ...previous, [name]: value }))
-    setErrors((previous) => ({ ...previous, [name]: undefined }))
+    updateError(name as ContactField, undefined)
+  }
+
+  // Sets one field's error, and drops the "check the highlighted fields"
+  // status once nothing is highlighted any more.
+  const updateError = (name: ContactField, error: string | undefined) => {
+    const next = { ...errors, [name]: error }
+    setErrors(next)
+    if (
+      status.message === messages.invalid &&
+      !Object.values(next).some(Boolean)
+    )
+      setStatus({ type: 'idle', message: '' })
+  }
+
+  // Check a field once it's filled in and left, so a mistyped email shows
+  // before Send. Empty fields wait for submit rather than nagging early.
+  const handleBlur = (
+    event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const name = event.target.name as ContactField
+    if (!values[name].trim()) return
+    updateError(name, validateContact(values).errors[name])
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -116,6 +202,7 @@ export default function ContactForm({ className }: { className?: string }) {
 
   return (
     <form
+      ref={formRef}
       className={className}
       onSubmit={handleSubmit}
       noValidate
@@ -125,9 +212,9 @@ export default function ContactForm({ className }: { className?: string }) {
         className="absolute -left-[10000px] size-px overflow-hidden"
         aria-hidden="true"
       >
-        <label htmlFor="contact-honeypot">Leave this field empty</label>
+        <label htmlFor={`${idPrefix}-honeypot`}>Leave this field empty</label>
         <input
-          id="contact-honeypot"
+          id={`${idPrefix}-honeypot`}
           name={HONEYPOT_NAME}
           type="text"
           tabIndex={-1}
@@ -136,20 +223,23 @@ export default function ContactForm({ className }: { className?: string }) {
       </div>
       {fields.map(({ name, label, type, autoComplete }) => {
         const error = errors[name]
-        const errorId = `${name}-error`
+        const errorId = `${idPrefix}-${name}-error`
         const inputProps = {
-          id: `contact-${name}`,
+          id: `${idPrefix}-${name}`,
           name,
           value: values[name],
           onChange: handleChange,
+          onBlur: handleBlur,
           required: true,
-          maxLength: maxLengths[name],
+          // The message has no hard cap, so a long paste isn't silently cut;
+          // validation explains the limit instead.
+          maxLength: name === 'message' ? undefined : maxLengths[name],
           disabled: sending,
           'aria-invalid': Boolean(error),
           'aria-describedby': error ? errorId : undefined,
         }
         return (
-          <div className="mb-6" key={name}>
+          <div className="mb-2" key={name}>
             <label htmlFor={inputProps.id} className="mb-2.5 block">
               {label}
             </label>
@@ -167,14 +257,17 @@ export default function ContactForm({ className }: { className?: string }) {
                 className={inputStyles}
               />
             )}
-            {error && (
-              <p id={errorId} className="mt-2 text-sm text-error">
-                {error}
-              </p>
-            )}
+            {/* Always takes its line, so an error appearing doesn't shift the form. */}
+            <p id={errorId} className="mt-1.5 min-h-6 text-sm text-error">
+              {error}
+            </p>
           </div>
         )
       })}
+      <p className="mb-4 text-sm text-faint">
+        Messages are delivered through EmailJS. Your name, email, and message
+        are only used to reply to you.
+      </p>
       <button type="submit" className={buttonStyles.primary} disabled={blocked}>
         {sending ? 'Sending…' : 'Send message'}
       </button>
@@ -185,6 +278,14 @@ export default function ContactForm({ className }: { className?: string }) {
       >
         {status.message}
       </p>
+      {offerLinkedIn && linkedIn && (
+        <ExternalLink
+          href={linkedIn}
+          className={`inline-flex min-h-11 items-center gap-1 ${textLinkStyles}`}
+        >
+          Message me on LinkedIn <span aria-hidden="true">↗</span>
+        </ExternalLink>
+      )}
     </form>
   )
 }

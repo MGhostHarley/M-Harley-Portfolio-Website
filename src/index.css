@@ -18,19 +18,24 @@
   --breakpoint-md: 48rem; /* 768px */
   --breakpoint-lg: 66.25rem; /* 1060px */
 
-  --color-night: #050816;
+  --color-night: #0a0b0e;
   --color-snow: #eeecf6;
   --color-body: #d7d3e8;
   --color-muted: #a9a3c2;
-  --color-faint: #77718b;
-  --color-line: rgb(194 189 214 / 14%);
-  --color-surface: rgb(17 14 42 / 72%);
+  --color-faint: #8d88a2;
+  --color-line: rgb(210 214 225 / 12%);
+  /* Soft, slightly cool gray, translucent so the stars show through. Kept a
+     touch cooler than the page so it never reads warm beside it. */
+  --color-surface: rgb(42 44 50 / 50%);
+  --color-band: rgb(42 44 50 / 30%); /* Fade at the top of each section band. */
+  --color-strip: rgb(24 26 31 / 50%); /* The Now strip under the hero. */
   --color-accent: #70d7fa;
-  --color-violet: #c176df;
-  --color-pink: #e6a7ed;
+  --color-accent-hover: #9ae4fc;
+  --color-coral: #ff9478; /* Marks AI work only. */
   --color-gold: #f7ce70;
   --color-live: #5ee6a8;
   --color-ink: #080b1c;
+  --color-dialog: #1a1c20;
   --color-error: #ffb3c7;
 
   --container-page: 1120px;
@@ -49,7 +54,7 @@
   }
 }
 
-/* Uppercase monospace label used above headings. Size it with text-*. */
+/* Uppercase label; only the hidden Projects section still uses one. */
 @utility eyebrow {
   font-family: var(--font-mono);
   font-weight: 500;
@@ -90,17 +95,46 @@
   }
 }
 
+/* The photo carousel's active dot, filling over each photo's interval. */
+@keyframes dot-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
 /* Site-wide element defaults. Everything else is utilities in the components. */
 @layer base {
   html {
     color-scheme: dark;
     scroll-behavior: smooth; /* Anchors set their own scroll-mt-* offsets. */
     -webkit-font-smoothing: antialiased;
+    /* Browser-drawn surfaces use the palette too. */
+    accent-color: var(--color-accent);
+    caret-color: var(--color-accent);
+    scrollbar-color: var(--color-faint) var(--color-night);
     @apply bg-night text-snow;
+  }
+  /* clip, not hidden, so the sticky nav keeps working. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+  /* The page behind an open modal stays put. */
+  html:has(dialog[open]) {
+    overflow: hidden;
   }
   body {
     min-width: 320px;
     line-height: 1.65;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    color: var(--color-snow);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
   /* Shrikhand has one weight; never fake a bold version of it. */
   .font-serif {
@@ -109,7 +143,10 @@
   /* Long words (e.g. "Medicare-compliant") break instead of overflowing at large text sizes. */
   h1,
   h2,
-  h3,
+  h3 {
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
   p,
   dt,
   dd,
@@ -123,8 +160,17 @@
   button:not(:disabled) {
     cursor: pointer;
   }
-  button:disabled {
+  :is(button, input, textarea):disabled {
     opacity: 0.65;
+    cursor: not-allowed;
+  }
+  /* A slight press, so every control answers the click. */
+  :is(a, button, summary):not(:disabled):active {
+    transform: translateY(1px);
+  }
+  /* The ring's color never changes, so color transitions can't fade it in. */
+  :is(a, button, summary, input, textarea) {
+    outline-color: var(--color-accent);
   }
   :focus-visible {
     outline: 3px solid var(--color-accent);

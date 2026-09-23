@@ -4,6 +4,7 @@ import { experiences } from '../src/data/experience'
 import { projects } from '../src/data/projects'
 import { caseStudies } from '../src/data/caseStudies'
 import { skillGroups } from '../src/data/skills'
+import { aiHighlights } from '../src/data/impact'
 
 const unique = (values: string[]) => new Set(values).size === values.length
 
@@ -28,6 +29,16 @@ describe('content', () => {
   it('every project links to a demo or its source', () => {
     for (const project of projects)
       expect(project.demo ?? project.source).toBeTruthy()
+  })
+
+  it('AI highlights only link to case studies that exist', () => {
+    const ids = new Set(caseStudies.map((study) => study.id))
+    for (const { caseStudyId } of aiHighlights)
+      if (caseStudyId) expect(ids.has(caseStudyId)).toBe(true)
+  })
+
+  it('every experience entry has a company logo', () => {
+    for (const entry of experiences) expect(entry.logo).toBeTruthy()
   })
 
   it('every skill has an icon or a badge', () => {

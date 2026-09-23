@@ -3,6 +3,35 @@ import type { CaseStudy } from './types'
 // Facts come from the resume; diagrams are simplified from the listed stack.
 export const caseStudies: CaseStudy[] = [
   {
+    id: 'invoice-reconciliation',
+    sector: 'Government',
+    title: 'Reconciling 600,000 invoices',
+    company: 'KPMG',
+    detail: 'Florida Department of Transportation',
+    period: '2018–2021',
+    result: { value: '$1.8M saved', label: 'and 20,000 work hours' },
+    problem:
+      "600,000 PDF invoices had to be reconciled against FDOT's financial database.",
+    approach:
+      "A Python tool that extracted invoice data from the PDFs and automated the reconciliation with the department's records.",
+    outcome: '$1.8 million and 20,000 work hours saved.',
+    diagram: [
+      {
+        nodes: [
+          { title: 'PDF invoices', detail: '600,000' },
+          { title: 'Python tool', detail: 'extract · match', kind: 'ai' },
+          { title: 'Financial DB', detail: 'FDOT', kind: 'store' },
+        ],
+      },
+    ],
+    keyDecision: {
+      title: 'Send uncertain matches to people, not guesses to the ledger',
+      detail:
+        'Mismatched or unreadable invoices went to a manual review queue. We tuned the confidence thresholds closely, and a large existing dataset gave us plenty to train the models on.',
+    },
+    stack: ['Python', 'PDF extraction', 'SQL'],
+  },
+  {
     id: 'medicare-documents',
     sector: 'Healthcare',
     title: 'Medicare-compliant documents at scale',
@@ -49,35 +78,6 @@ export const caseStudies: CaseStudy[] = [
       'AWS ECS',
       'S3',
     ],
-  },
-  {
-    id: 'invoice-reconciliation',
-    sector: 'Government',
-    title: 'Reconciling 600,000 invoices',
-    company: 'KPMG',
-    detail: 'Florida Department of Transportation',
-    period: '2018–2021',
-    result: { value: '$1.8M saved', label: 'and 20,000 work hours' },
-    problem:
-      "600,000 PDF invoices had to be reconciled against FDOT's financial database.",
-    approach:
-      "A Python tool that extracted invoice data from the PDFs and automated the reconciliation with the department's records.",
-    outcome: '$1.8 million and 20,000 work hours saved.',
-    diagram: [
-      {
-        nodes: [
-          { title: 'PDF invoices', detail: '600,000' },
-          { title: 'Python tool', detail: 'extract · match', kind: 'ai' },
-          { title: 'Financial DB', detail: 'FDOT', kind: 'store' },
-        ],
-      },
-    ],
-    keyDecision: {
-      title: 'Send uncertain matches to people, not guesses to the ledger',
-      detail:
-        'Mismatched or unreadable invoices went to a manual review queue. We tuned the confidence thresholds closely, and a large existing dataset gave us plenty to train the models on.',
-    },
-    stack: ['Python', 'PDF extraction', 'SQL'],
   },
   {
     id: 'support-triage',

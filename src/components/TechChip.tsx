@@ -4,17 +4,15 @@ import { techIcon } from '../data/tech'
 
 // WCAG relative luminance of an sRGB color.
 function luminance([r, g, b]: number[]) {
-  const linear = (c: number) =>
-    c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
-  return (
-    0.2126 * linear(r / 255) +
-    0.7152 * linear(g / 255) +
-    0.0722 * linear(b / 255)
-  )
+  const linear = (channel: number) => {
+    const c = channel / 255
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b)
 }
 
-// Text on the night background needs a luminance of about 0.2 for 4.5:1 contrast.
-const MIN_LUMINANCE = 0.2
+// Leave headroom for the chip's tinted surface, not just the night background.
+const MIN_LUMINANCE = 0.23
 
 /** The brand color, lightened toward white just enough to read on the background. */
 function readableColor(hex: string) {
@@ -50,7 +48,7 @@ export default function TechChip({
   return (
     <span
       style={{ '--brand': color } as CSSProperties}
-      className="inline-flex items-center gap-1.5 rounded-full border border-(--brand)/45 bg-(--brand)/10 px-2.5 py-1 font-mono text-xs font-medium whitespace-nowrap text-(--brand)"
+      className="inline-flex items-center gap-1.5 rounded-full border border-(--brand)/45 bg-(--brand)/10 px-2.5 py-1 text-[0.8rem] font-medium whitespace-nowrap text-(--brand)"
     >
       {icon && (
         <svg

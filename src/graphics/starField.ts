@@ -6,9 +6,18 @@ interface Star {
   z: number
   size: number
   brightness: number
+  /** "r, g, b" */
+  color: string
 }
 
-const STAR_COLOR = '242, 114, 200'
+// Real stars vary with temperature: mostly white, some blue-white, a few pale
+// yellow and orange. Weights sum to 1.
+const STAR_COLORS = [
+  { rgb: '245, 246, 255', weight: 0.62 },
+  { rgb: '200, 215, 255', weight: 0.18 },
+  { rgb: '255, 238, 205', weight: 0.13 },
+  { rgb: '255, 212, 175', weight: 0.07 },
+]
 const SPHERE_RADIUS = 1.2
 const CAMERA_DISTANCE = 1.8
 const MAX_PIXEL_RATIO = 1.5
@@ -30,9 +39,20 @@ function seededRandom(seed: number) {
   }
 }
 
+function pickColor(roll: number) {
+  let total = 0
+  for (const { rgb, weight } of STAR_COLORS) {
+    total += weight
+    if (roll < total) return rgb
+  }
+  return STAR_COLORS[0].rgb
+}
+
 /** Uniformly distributed points inside a sphere. */
 function createStars(count: number): Star[] {
   const random = seededRandom(SEED)
+  // A separate sequence for colors, so star positions stay exactly as before.
+  const colorRandom = seededRandom(SEED + 1)
   return Array.from({ length: count }, () => {
     const radius = SPHERE_RADIUS * Math.cbrt(random())
     const azimuth = random() * Math.PI * 2
@@ -44,6 +64,7 @@ function createStars(count: number): Star[] {
       z: radius * vertical,
       size: 0.6 + random() * 0.9,
       brightness: 0.35 + random() * 0.55,
+      color: pickColor(colorRandom()),
     }
   })
 }
@@ -56,10 +77,27 @@ interface SavedAngles {
   time: number
 }
 
+/**
+ * Parses the saved sky position, or returns undefined unless all three values
+ * are finite numbers, so a damaged entry can't turn the angles into NaN and
+ * blank the sky.
+ */
+export function parseSavedAngles(raw: string | null): SavedAngles | undefined {
+  try {
+    const saved: unknown = JSON.parse(raw ?? 'null')
+    if (!saved || typeof saved !== 'object') return undefined
+    const { x, y, time } = saved as Record<string, unknown>
+    return [x, y, time].every(Number.isFinite)
+      ? { x: x as number, y: y as number, time: time as number }
+      : undefined
+  } catch {
+    return undefined
+  }
+}
+
 function readSavedAngles(): SavedAngles | undefined {
   try {
-    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? 'null')
-    return typeof saved?.x === 'number' ? saved : undefined
+    return parseSavedAngles(sessionStorage.getItem(STORAGE_KEY))
   } catch {
     return undefined
   }
@@ -125,7 +163,7 @@ export function createStarField(
       if (offscreen) continue
       const opacity = Math.min(0.9, star.brightness / depth)
       context.beginPath()
-      context.fillStyle = `rgba(${STAR_COLOR}, ${opacity})`
+      context.fillStyle = `rgba(${star.color}, ${opacity})`
       context.arc(
         screenX,
         screenY,

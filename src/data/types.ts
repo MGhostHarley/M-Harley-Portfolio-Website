@@ -34,6 +34,8 @@ export interface NavLink {
 export interface Experience {
   id: string
   company: string
+  /** The company's square logo tile, from companyLogos. */
+  logo: string
   title: string
   date: string
   location?: string
