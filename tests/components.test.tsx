@@ -411,6 +411,62 @@ describe('PhotoCarousel', () => {
     vi.useRealTimers()
   })
 
+  it('opens the selected photo full screen and closes with the X or native dialog dismissal', async () => {
+    HTMLDialogElement.prototype.showModal = vi.fn(function (
+      this: HTMLDialogElement,
+    ) {
+      this.open = true
+    })
+    HTMLDialogElement.prototype.close = vi.fn(function (
+      this: HTMLDialogElement,
+    ) {
+      this.open = false
+      this.dispatchEvent(new Event('close'))
+    })
+    const user = userEvent.setup()
+    render(<PhotoCarousel />)
+
+    await user.click(
+      screen.getByRole('button', { name: `Show photo 2 of ${photos.length}` }),
+    )
+    await user.click(
+      screen.getByRole('button', {
+        name: `View ${photos[1].alt} full screen`,
+      }),
+    )
+    const viewer = screen.getByRole('dialog', {
+      name: 'Full-screen photo',
+    }) as HTMLDialogElement
+    expect(viewer.querySelector('img')?.getAttribute('alt')).toBe(photos[1].alt)
+
+    await user.click(screen.getByRole('button', { name: 'Next photo' }))
+    expect(viewer.querySelector('img')?.getAttribute('alt')).toBe(photos[2].alt)
+    await user.keyboard('{ArrowRight}')
+    expect(viewer.querySelector('img')?.getAttribute('alt')).toBe(photos[3].alt)
+    await user.click(screen.getByRole('button', { name: 'Next photo' }))
+    expect(viewer.querySelector('img')?.getAttribute('alt')).toBe(photos[0].alt)
+    await user.click(screen.getByRole('button', { name: 'Previous photo' }))
+    expect(viewer.querySelector('img')?.getAttribute('alt')).toBe(photos[3].alt)
+
+    await user.click(screen.getByRole('button', { name: 'Close photo' }))
+    expect(HTMLDialogElement.prototype.close).toHaveBeenCalledOnce()
+    expect(viewer.querySelector('img')).toBeNull()
+    expect(visibleAlt()).toBe(photos[3].alt)
+
+    await user.click(
+      screen.getByRole('button', {
+        name: `View ${photos[3].alt} full screen`,
+      }),
+    )
+    // The browser's Escape key closes a modal dialog and fires 'close'.
+    act(() => {
+      viewer.open = false
+      fireEvent(viewer, new Event('close'))
+    })
+    expect(viewer.querySelector('img')).toBeNull()
+    expect(visibleAlt()).toBe(photos[3].alt)
+  })
+
   it('stays on one photo when animation is paused', () => {
     vi.useFakeTimers()
     render(
