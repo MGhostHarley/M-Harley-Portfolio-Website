@@ -65,6 +65,8 @@ describe('About skills', () => {
       if (count > 6) {
         expect(within(firstList).getAllByRole('listitem')).toHaveLength(5)
         expect(group.getByText(`+${count - 5} more`)).toBeTruthy()
+        // The rest stay in the HTML for search engines, just hidden.
+        expect(firstList.querySelectorAll('li')).toHaveLength(count)
       } else {
         expect(within(firstList).getAllByRole('listitem')).toHaveLength(count)
         expect(group.queryByText(/more$/)).toBeNull()

@@ -9,11 +9,21 @@ import { panelStyles } from './styles'
 /** Enough to skim; the rest wait behind "+N more". Order in the data is priority. */
 const VISIBLE_SKILLS = 5
 
-function SkillChips({ skills }: { skills: Skill[] }) {
+/**
+ * Every chip stays in the HTML, so search engines see the full skill list;
+ * chips past visibleCount are only hidden from view until expanded.
+ */
+function SkillChips({
+  skills,
+  visibleCount = skills.length,
+}: {
+  skills: Skill[]
+  visibleCount?: number
+}) {
   return (
     <ul className="flex flex-wrap gap-1.5">
-      {skills.map(({ name, icon }) => (
-        <li key={name}>
+      {skills.map(({ name, icon }, index) => (
+        <li key={name} hidden={index >= visibleCount}>
           <TechChip name={name} icon={icon} tone="neutral" />
         </li>
       ))}
@@ -31,7 +41,8 @@ function SkillList({ skills }: { skills: Skill[] }) {
     <>
       <div id={listId}>
         <SkillChips
-          skills={expanded ? skills : skills.slice(0, VISIBLE_SKILLS)}
+          skills={skills}
+          visibleCount={expanded ? skills.length : VISIBLE_SKILLS}
         />
       </div>
       {/* After the chips, so it stays at the end whether open or closed. */}
